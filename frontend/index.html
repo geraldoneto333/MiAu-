@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuMiau Petshop</title>
+    <link rel="stylesheet" href="css/palette.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Tela de Login -->
+    <div id="login-view" class="view">
+        <img src="imagens/logo_completo_aumiau.png" alt="AuMiau Logo Completo">
+        <div class="login-card">
+            <h2>Bem-vindo ao AuMiau!</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+                <p id="login-error" style="color: red; display: none; margin-top: 10px;"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Aplicação Principal -->
+    <div id="app-view" class="view hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <!-- Usando o logo iconizado conforme requisito -->
+                <img src="imagens/logo_aumiau.png" alt="AuMiau Icone">
+            </div>
+            <nav>
+                <ul id="nav-menu">
+                    <li><a href="#" data-target="dashboard" class="nav-link active">Dashboard</a></li>
+                    <li><a href="#" data-target="tutores" class="nav-link">Tutores</a></li>
+                    <li><a href="#" data-target="pets" class="nav-link">Pets</a></li>
+                    <li><a href="#" data-target="servicos" class="nav-link">Serviços</a></li>
+                    <li><a href="#" data-target="produtos" class="nav-link">Produtos</a></li>
+                    <li><a href="#" data-target="agendamentos" class="nav-link">Agendamentos</a></li>
+                </ul>
+            </nav>
+            <a href="#" id="btn-logout" class="logout-btn">Sair</a>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="topbar">
+                <h1 id="page-title">Dashboard</h1>
+            </header>
+            
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <section id="sec-dashboard" class="content-section">
+                    <h2>Visão Geral</h2>
+                    <p>Bem-vindo ao sistema de gestão do AuMiau Petshop. Utilize o menu lateral para navegar entre os módulos.</p>
+                </section>
+
+                <!-- Tutores Section -->
+                <section id="sec-tutores" class="content-section hidden">
+                    <div class="action-bar">
+                        <h2>Gestão de Tutores</h2>
+                        <button onclick="openModal('modal-tutor')">+ Novo Tutor</button>
+                    </div>
+                    <div class="data-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Contato</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-tutores"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Pets Section -->
+                <section id="sec-pets" class="content-section hidden">
+                    <div class="action-bar">
+                        <h2>Gestão de Pets</h2>
+                        <button onclick="openModal('modal-pet')">+ Novo Pet</button>
+                    </div>
+                    <div class="data-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Espécie</th>
+                                    <th>Tutor ID</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-pets"></tbody>
+                        </table>
+                    </div>
+                </section>
+                
+                <!-- Serviços Section -->
+                <section id="sec-servicos" class="content-section hidden">
+                    <div class="action-bar">
+                        <h2>Gestão de Serviços</h2>
+                        <button onclick="openModal('modal-servico')">+ Novo Serviço</button>
+                    </div>
+                    <div class="data-table-container">
+                        <table>
+                            <thead><tr><th>ID</th><th>Nome</th><th>Preço</th><th>Ações</th></tr></thead>
+                            <tbody id="tbody-servicos"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Produtos Section -->
+                <section id="sec-produtos" class="content-section hidden">
+                    <div class="action-bar">
+                        <h2>Gestão de Produtos</h2>
+                        <button onclick="openModal('modal-produto')">+ Novo Produto</button>
+                    </div>
+                    <div class="data-table-container">
+                        <table>
+                            <thead><tr><th>ID</th><th>Nome</th><th>Preço</th><th>Estoque</th><th>Ações</th></tr></thead>
+                            <tbody id="tbody-produtos"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Agendamentos Section -->
+                <section id="sec-agendamentos" class="content-section hidden">
+                    <div class="action-bar">
+                        <h2>Gestão de Agendamentos</h2>
+                        <button onclick="openModal('modal-agendamento')">+ Novo Agendamento</button>
+                    </div>
+                    <div class="data-table-container">
+                        <table>
+                            <thead><tr><th>ID</th><th>Tutor (ID)</th><th>Pet (ID)</th><th>Serviço (ID)</th><th>Data/Hora</th><th>Status</th><th>Ações</th></tr></thead>
+                            <tbody id="tbody-agendamentos"></tbody>
+                        </table>
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+
+    <!-- Modais -->
+    <!-- Modal Tutor -->
+    <div id="modal-tutor" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-tutor-title">Cadastrar Tutor</h3>
+            <form id="form-tutor">
+                <input type="hidden" id="tutor-id">
+                <div class="input-group">
+                    <label>Nome</label>
+                    <input type="text" id="tutor-nome" required>
+                </div>
+                <div class="input-group">
+                    <label>Contato</label>
+                    <input type="text" id="tutor-contato">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('modal-tutor')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Pet -->
+    <div id="modal-pet" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-pet-title">Cadastrar Pet</h3>
+            <form id="form-pet">
+                <input type="hidden" id="pet-id">
+                <div class="input-group">
+                    <label>Nome</label>
+                    <input type="text" id="pet-nome" required>
+                </div>
+                <div class="input-group">
+                    <label>Espécie</label>
+                    <input type="text" id="pet-especie" required>
+                </div>
+                <div class="input-group">
+                    <label>Tutor ID</label>
+                    <input type="number" id="pet-tutor-id" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('modal-pet')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Serviço -->
+    <div id="modal-servico" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-servico-title">Cadastrar Serviço</h3>
+            <form id="form-servico">
+                <input type="hidden" id="servico-id">
+                <div class="input-group"><label>Nome</label><input type="text" id="servico-nome" required></div>
+                <div class="input-group"><label>Descrição</label><input type="text" id="servico-descricao"></div>
+                <div class="input-group"><label>Preço</label><input type="number" step="0.01" id="servico-preco" required></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('modal-servico')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Produto -->
+    <div id="modal-produto" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-produto-title">Cadastrar Produto</h3>
+            <form id="form-produto">
+                <input type="hidden" id="produto-id">
+                <div class="input-group"><label>Nome</label><input type="text" id="produto-nome" required></div>
+                <div class="input-group"><label>Descrição</label><input type="text" id="produto-descricao"></div>
+                <div class="input-group"><label>Preço</label><input type="number" step="0.01" id="produto-preco" required></div>
+                <div class="input-group"><label>Estoque</label><input type="number" id="produto-estoque" value="0" required></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('modal-produto')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Agendamento -->
+    <div id="modal-agendamento" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-agendamento-title">Cadastrar Agendamento</h3>
+            <form id="form-agendamento">
+                <input type="hidden" id="agendamento-id">
+                <div class="input-group"><label>ID do Tutor</label><input type="number" id="agen-tutor-id" required></div>
+                <div class="input-group"><label>ID do Pet</label><input type="number" id="agen-pet-id" required></div>
+                <div class="input-group"><label>ID do Serviço</label><input type="number" id="agen-servico-id" required></div>
+                <div class="input-group"><label>Data e Hora</label><input type="datetime-local" id="agen-datahora" required></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('modal-agendamento')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
