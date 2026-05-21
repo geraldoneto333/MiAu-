@@ -59,40 +59,50 @@ body {
     color: #555;
 }
 
+/* Estilo de inputs baseado no Arco Design */
 .input-group input {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 8px 12px;
+    border: 1px solid #e5e6eb;
+    border-radius: 4px; /* Cantos mais suaves e padrão Arco */
+    font-size: 14px;
+    color: #1d2129;
+    background-color: #ffffff;
     box-sizing: border-box;
-    transition: border-color 0.3s;
+    transition: all 0.2s cubic-bezier(0, 0, 1, 1);
+}
+
+.input-group input:hover {
+    border-color: #c9cdd4;
 }
 
 .input-group input:focus {
     outline: none;
     border-color: var(--cor-dominante);
+    box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2); /* Sombra de foco Arco-like */
+    background-color: #ffffff;
 }
 
+/* Botão primário com inspiração no Arco Design */
 button.btn-primary {
     width: 100%;
-    padding: 0.75rem;
+    padding: 8px 15px;
     background-color: var(--cor-dominante);
-    color: #000000; /* Texto preto para melhorar o contraste com o fundo claro */
+    color: #000000; 
     border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 700;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: opacity 0.3s, transform 0.1s;
+    transition: all 0.2s cubic-bezier(0, 0, 1, 1);
 }
 
 button.btn-primary:hover {
-    opacity: 0.9;
+    filter: brightness(0.95);
 }
 
 button.btn-primary:active {
-    transform: translateY(2px);
+    filter: brightness(0.9);
 }
 
 /* --- LAYOUT DO SISTEMA (APP VIEW) --- */
@@ -239,13 +249,207 @@ button.btn-primary:active {
     flex: 1;
 }
 
-/* Data Tables */
-.data-table-container {
+.topbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* Notificações e Avatar */
+.notification-wrapper, .profile-wrapper {
+    position: relative;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: #111;
+    font-size: 1.4rem;
+    cursor: pointer;
+    position: relative;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.icon-btn:hover {
+    transform: scale(1.1);
+}
+
+.badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #f53f3f;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    transform: translate(30%, -20%);
+    border: 2px solid white;
+}
+
+.profile-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.profile-btn img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.profile-btn:hover img {
+    transform: scale(1.05);
+}
+
+/* Dropdown Menu Arco Design Style */
+.dropdown-menu {
+    position: absolute;
+    top: 130%;
+    right: 0;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    min-width: 200px;
+    border-radius: 4px;
+    border: 1px solid #e5e6eb;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: none; /* Oculto por padrão */
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.dropdown-menu.show {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-menu a {
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #1d2129;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background: #f2f3f5;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #e5e6eb;
+    margin: 4px 0;
+}
+
+.text-danger {
+    color: #f53f3f !important;
+}
+
+/* Notificações Específicas Dropdown */
+#notif-dropdown {
+    min-width: 300px;
+}
+
+.dropdown-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid #e5e6eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dropdown-header strong {
+    color: #1d2129;
+}
+.dropdown-header a {
+    padding: 0;
+    color: #165dff; /* Azul Arco Design para links de ação, mais legível */
+    font-size: 12px;
+    font-weight: 500;
+}
+.dropdown-header a:hover {
+    background: transparent;
+    text-decoration: underline;
+}
+
+.dropdown-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f2f3f5;
+    font-size: 13px;
+    color: #4e5969;
+}
+.notif-item:last-child {
+    border-bottom: none;
+}
+.notif-item strong {
+    display: block;
+    color: #1d2129;
+    margin-bottom: 4px;
+}
+
+.dropdown-footer {
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #e5e6eb;
+}
+.dropdown-footer a {
+    justify-content: center;
+    color: #4e5969;
+}
+
+/* Profile Edit Modal */
+.profile-edit-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-edit-header img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e5e6eb;
+}
+
+.profile-edit-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Cards Arco Design */
+.data-table-container {
+    background: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #e5e6eb;
+    box-shadow: none;
     padding: 1.5rem;
     margin-top: 1.5rem;
+    overflow-x: auto; /* Permite rolar a tabela lateralmente no celular */
 }
 
 .action-bar {
@@ -254,44 +458,48 @@ button.btn-primary:active {
     margin-bottom: 1rem;
 }
 
-.action-bar button {
-    background-color: #333333; /* Fundo escuro fixo para contraste */
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
+/* Padrões Arco Design para botões de ação e tabelas */
+.action-bar button, td button, .btn-cancel {
+    padding: 5px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    border: 1px solid transparent;
     cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
+    transition: all 0.2s cubic-bezier(0, 0, 1, 1);
 }
 
+.action-bar button {
+    background-color: var(--cor-dominante, #333);
+    color: #000;
+}
 .action-bar button:hover {
-    background-color: #000000;
+    filter: brightness(0.95);
 }
 
+/* Tabela Arco Design Style */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
 th, td {
-    padding: 1rem;
+    padding: 9px 16px;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #e5e6eb;
 }
 
 th {
-    background-color: #f8f9fa;
-    color: #555;
-    font-weight: 600;
+    background-color: #f2f3f5;
+    color: #1d2129;
+    font-weight: 500;
+}
+
+td {
+    color: #4e5969;
 }
 
 td button {
-    padding: 0.4rem 0.8rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
     margin-right: 0.5rem;
 }
 
@@ -301,8 +509,11 @@ td button {
 }
 
 .btn-delete {
-    background-color: #dc3545;
+    background-color: #f53f3f;
     color: white;
+}
+.btn-delete:hover {
+    background-color: #f76560;
 }
 
 /* Modal */
@@ -318,16 +529,41 @@ td button {
 
 .modal-content {
     background: white;
-    padding: 2rem;
-    border-radius: 12px;
+    padding: 0 2rem 2rem 2rem;
+    border-radius: 4px; /* Raio padrão do Arco Design */
     width: 90%;
     max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-.modal-content h3 {
-    margin-top: 0;
-    color: #111111; /* Preto para leitura */
-    font-size: 1.4rem;
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e6eb;
+    padding: 1.5rem 0 1rem 0;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #1d2129;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: #86909c;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0;
+}
+
+.btn-close:hover {
+    color: #1d2129;
 }
 
 .modal-actions {
@@ -338,12 +574,11 @@ td button {
 }
 
 .btn-cancel {
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
+    background-color: #f2f3f5;
+    color: #4e5969;
+}
+.btn-cancel:hover {
+    background-color: #e5e6eb;
 }
 
 /* --- HOME E MURAL DE AVISOS --- */
@@ -361,10 +596,11 @@ td button {
 }
 
 .home-card {
-    background: white;
+    background: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #e5e6eb;
+    box-shadow: none;
     padding: 2rem;
-    border-radius: 16px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .welcome-card {
@@ -407,4 +643,102 @@ td button {
     border-radius: 4px;
     color: #333;
 }
+
+/* ========================================================
+   RESPONSIVIDADE (SMARTPHONES E TABLETS)
+   Adaptações do design system para telas menores
+======================================================== */
+@media (max-width: 768px) {
+    /* Topbar */
+    .topbar {
+        padding: 0 1rem;
+        height: 60px;
+    }
+    
+    .topbar h1 {
+        font-size: 1.2rem;
+    }
+    
+    .btn-toggle {
+        margin-right: 1rem;
+        font-size: 1.3rem;
+    }
+
+    /* Sidebar Flutuante */
+    .sidebar {
+        position: fixed;
+        left: -250px; /* Esconde a sidebar fora da tela */
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+    }
+
+    /* Hack elegante: Quando clicamos no toggle, o JS adiciona .collapsed
+       No desktop isso encolhe o menu. No mobile, usamos isso para abri-lo! */
+    .sidebar.collapsed {
+        left: 0; 
+        width: 250px; /* Força a manter 250px ao invés dos 80px do desktop */
+    }
+
+    .sidebar.collapsed nav ul li a span,
+    .sidebar.collapsed .logout-btn span {
+        display: inline; /* Volta a exibir os textos no celular */
+    }
+
+    .sidebar.collapsed nav ul li a, 
+    .sidebar.collapsed .logout-btn {
+        justify-content: flex-start;
+        padding: 1rem 1.5rem;
+    }
+
+    .sidebar.collapsed nav ul li a i, 
+    .sidebar.collapsed .logout-btn i {
+        margin-right: 10px;
+    }
+
+    .sidebar.collapsed .sidebar-logo img {
+        width: 100%;
+        max-width: 220px;
+        transform: scale(1.6); /* Mantém o logo grande no celular */
+    }
+
+    /* Área de Conteúdo */
+    .content-area {
+        padding: 1rem;
+    }
+
+    /* Action Bar (Título e Botão de Novo) */
+    .action-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .action-bar button {
+        width: 100%; /* Botão ocupa toda a largura no celular */
+    }
+
+    /* Data Tables Container */
+    .data-table-container {
+        padding: 1rem;
+    }
+    
+    th, td {
+        padding: 8px 10px; /* Reduz o padding das tabelas */
+        font-size: 0.9rem;
+    }
+    
+    td button {
+        margin-bottom: 0.5rem;
+        width: 100%; /* Empilha os botões de ação na tabela se apertar */
+    }
+
+    /* Modais */
+    .modal-content {
+        width: 95%;
+        padding: 0 1.5rem 1.5rem 1.5rem;
+    }
+}
+
 

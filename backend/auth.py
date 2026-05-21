@@ -12,12 +12,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
-# Funções de verificação (agora em texto puro conforme solicitado) - [Carlos Eduardo]
 def verify_password(plain_password, db_password):
     return plain_password == db_password
 
 def get_password_hash(password):
-    return password # Não faz mais hash
+    return password # Em texto puro
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -44,7 +43,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: pymysql.connection
         raise credentials_exception
         
     cursor = db.cursor()
-    cursor.execute("SELECT Id, Username, Email FROM Usuarios WHERE Username = %s", (username,))
+    cursor.execute("SELECT id, username, email FROM usuarios WHERE username = %s", (username,))
     user = cursor.fetchone()
     if user is None:
         raise credentials_exception

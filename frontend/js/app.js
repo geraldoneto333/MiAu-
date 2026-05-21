@@ -9,7 +9,6 @@ function checkAuth() {
         loadData('tutores');
         loadData('pets');
         loadData('servicos');
-        loadData('produtos');
         loadData('agendamentos');
     } else {
         document.getElementById('login-view').classList.remove('hidden');
@@ -63,6 +62,64 @@ document.getElementById('sidebar-toggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('collapsed');
 });
 
+// --- Dropdowns da Topbar (Perfil e Notificações) ---
+document.getElementById('btn-profile').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('profile-dropdown').classList.toggle('show');
+    document.getElementById('notif-dropdown').classList.remove('show');
+});
+
+document.getElementById('btn-notifications').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('notif-dropdown').classList.toggle('show');
+    document.getElementById('profile-dropdown').classList.remove('show');
+});
+
+// Fechar dropdowns ao clicar fora
+window.addEventListener('click', (e) => {
+    if (!e.target.closest('#profile-wrapper')) {
+        document.getElementById('profile-dropdown').classList.remove('show');
+    }
+    if (!e.target.closest('#notif-wrapper')) {
+        document.getElementById('notif-dropdown').classList.remove('show');
+    }
+});
+
+// Lógica do Sistema de Notificações
+const mockNotifications = [
+    { title: "Novo Aviso: Campanha Vacinação", time: "Hoje, 10:00" },
+    { title: "Sistema Atualizado v2.0", time: "Hoje, 08:00" },
+    { title: "Agendamento Confirmado - Rex", time: "Ontem" }
+];
+
+function renderNotifications() {
+    const list = document.getElementById('notif-list');
+    const badge = document.getElementById('notif-badge');
+    
+    if (!list || !badge) return;
+
+    list.innerHTML = '';
+    if (mockNotifications.length === 0) {
+        list.innerHTML = '<div class="notif-item">Nenhuma notificação nova.</div>';
+        badge.style.display = 'none';
+    } else {
+        badge.textContent = mockNotifications.length;
+        badge.style.display = 'block';
+        mockNotifications.forEach(n => {
+            list.innerHTML += `<div class="notif-item">
+                <strong>${n.title}</strong>
+                ${n.time}
+            </div>`;
+        });
+    }
+}
+
+window.clearNotifications = function(e) {
+    if(e) e.preventDefault();
+    mockNotifications.length = 0; // Zera a lista
+    renderNotifications();
+};
+
 function openModal(id) {
     document.getElementById(id).classList.remove('hidden');
 }
@@ -80,11 +137,11 @@ async function loadData(module) {
             tbody.innerHTML = '';
             data.forEach(t => {
                 tbody.innerHTML += `<tr>
-                    <td>${t.Id}</td>
-                    <td>${t.Nome}</td>
-                    <td>${t.Contato || ''}</td>
+                    <td>${t.id}</td>
+                    <td>${t.nome}</td>
+                    <td>${t.contato || ''}</td>
                     <td>
-                        <button class="btn-delete" onclick="API.deleteTutor(${t.Id}).then(()=>loadData('tutores'))">Excluir</button>
+                        <button class="btn-delete" onclick="API.deleteTutor(${t.id}).then(()=>loadData('tutores'))">Excluir</button>
                     </td>
                 </tr>`;
             });
@@ -96,12 +153,12 @@ async function loadData(module) {
             tbody.innerHTML = '';
             data.forEach(p => {
                 tbody.innerHTML += `<tr>
-                    <td>${p.Id}</td>
-                    <td>${p.Nome}</td>
-                    <td>${p.Especie}</td>
-                    <td>${p.TutorId}</td>
+                    <td>${p.id}</td>
+                    <td>${p.nome}</td>
+                    <td>${p.especie}</td>
+                    <td>${p.tutor_id}</td>
                     <td>
-                        <button class="btn-delete" onclick="API.deletePet(${p.Id}).then(()=>loadData('pets'))">Excluir</button>
+                        <button class="btn-delete" onclick="API.deletePet(${p.id}).then(()=>loadData('pets'))">Excluir</button>
                     </td>
                 </tr>`;
             });
@@ -113,25 +170,10 @@ async function loadData(module) {
             tbody.innerHTML = '';
             data.forEach(s => {
                 tbody.innerHTML += `<tr>
-                    <td>${s.Id}</td>
-                    <td>${s.Nome}</td>
-                    <td>R$ ${s.Preco}</td>
-                    <td><button class="btn-delete" onclick="API.deleteServico(${s.Id}).then(()=>loadData('servicos'))">Excluir</button></td>
-                </tr>`;
-            });
-        } catch (e) { console.error(e); }
-    } else if (module === 'produtos') {
-        try {
-            const data = await API.getProdutos();
-            const tbody = document.getElementById('tbody-produtos');
-            tbody.innerHTML = '';
-            data.forEach(p => {
-                tbody.innerHTML += `<tr>
-                    <td>${p.Id}</td>
-                    <td>${p.Nome}</td>
-                    <td>R$ ${p.Preco}</td>
-                    <td>${p.Estoque}</td>
-                    <td><button class="btn-delete" onclick="API.deleteProduto(${p.Id}).then(()=>loadData('produtos'))">Excluir</button></td>
+                    <td>${s.id}</td>
+                    <td>${s.nome}</td>
+                    <td>R$ ${s.preco}</td>
+                    <td><button class="btn-delete" onclick="API.deleteServico(${s.id}).then(()=>loadData('servicos'))">Excluir</button></td>
                 </tr>`;
             });
         } catch (e) { console.error(e); }
@@ -142,18 +184,82 @@ async function loadData(module) {
             tbody.innerHTML = '';
             data.forEach(a => {
                 tbody.innerHTML += `<tr>
-                    <td>${a.Id}</td>
-                    <td>${a.TutorId}</td>
-                    <td>${a.PetId}</td>
-                    <td>${a.ServicoId}</td>
-                    <td>${new Date(a.DataHora).toLocaleString()}</td>
-                    <td>${a.Status}</td>
-                    <td><button class="btn-delete" onclick="API.deleteAgendamento(${a.Id}).then(()=>loadData('agendamentos'))">Excluir</button></td>
+                    <td>${a.id}</td>
+                    <td>${a.tutor_id}</td>
+                    <td>${a.pet_id}</td>
+                    <td>${a.servico_id}</td>
+                    <td>${new Date(a.data_hora).toLocaleString()}</td>
+                    <td>${a.status}</td>
+                    <td><button class="btn-delete" onclick="API.deleteAgendamento(${a.id}).then(()=>loadData('agendamentos'))">Excluir</button></td>
                 </tr>`;
             });
         } catch (e) { console.error(e); }
     }
 }
 
+// Função para carregar Perfil
+async function loadProfile() {
+    try {
+        const data = await API.getProfile();
+        document.getElementById('perfil-nome').value = data.username;
+        document.getElementById('perfil-email').value = data.email;
+        
+        // Carrega a foto do localStorage
+        const savedAvatar = localStorage.getItem('aumiau_avatar');
+        const defaultAvatar = `https://ui-avatars.com/api/?name=${data.username}&background=ffd1dc&color=111`;
+        
+        document.getElementById('perfil-avatar-preview').src = savedAvatar || defaultAvatar;
+        document.getElementById('user-avatar-img').src = savedAvatar || defaultAvatar;
+    } catch (e) { console.error("Erro ao carregar perfil:", e); }
+}
+
+// Salvar Perfil
+document.getElementById('form-perfil').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('perfil-nome').value;
+    const email = document.getElementById('perfil-email').value;
+    const password = document.getElementById('perfil-senha').value;
+    
+    const payload = { username, email };
+    if (password.trim() !== '') {
+        payload.password = password;
+    }
+    
+    try {
+        await API.updateProfile(payload);
+        closeModal('modal-perfil');
+        document.getElementById('perfil-senha').value = ''; // Limpa o campo de senha
+        loadProfile(); // recarrega
+        alert('Perfil atualizado com sucesso!');
+    } catch(e) { alert(e.message); }
+});
+
+// Upload de Foto
+document.getElementById('foto-upload').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64Img = event.target.result;
+            localStorage.setItem('aumiau_avatar', base64Img); // Salva foto no PC localmente
+            document.getElementById('perfil-avatar-preview').src = base64Img;
+            document.getElementById('user-avatar-img').src = base64Img;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Remover foto
+document.getElementById('btn-remover-foto').addEventListener('click', () => {
+    localStorage.removeItem('aumiau_avatar');
+    loadProfile();
+});
+
 // Inicializa a aplicação - [Carlos Eduardo]
-window.onload = checkAuth;
+window.onload = () => {
+    checkAuth();
+    if(localStorage.getItem('aumiau_token')) {
+        loadProfile();
+    }
+    renderNotifications();
+};

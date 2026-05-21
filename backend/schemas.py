@@ -12,62 +12,50 @@ class Token(BaseModel):
     token_type: str
 
 class TutorBase(BaseModel):
-    Nome: str
-    Contato: Optional[str] = None
-    Endereco: Optional[str] = None
-    Telefone: Optional[str] = None
+    nome: str
+    contato: str
+    endereco: Optional[str] = None
+    telefone: Optional[str] = None
 
 class TutorCreate(TutorBase):
     pass
 
 class Tutor(TutorBase):
-    Id: int
+    id: int
 
 class PetBase(BaseModel):
-    Nome: str
-    Especie: str
-    Raca: Optional[str] = None
-    Sexo: Optional[str] = None
-    TutorId: int
+    nome: str
+    especie: str
+    raca: Optional[str] = None
+    sexo: str
+    tutor_id: int
 
 class PetCreate(PetBase):
     pass
 
 class Pet(PetBase):
-    Id: int
+    id: int
 
 class ServicoBase(BaseModel):
-    Nome: str
-    Descricao: Optional[str] = None
-    Preco: float
+    nome: str
+    descricao: Optional[str] = None
+    preco: float
 
 class ServicoCreate(ServicoBase):
     pass
 
 class Servico(ServicoBase):
-    Id: int
-
-class ProdutoBase(BaseModel):
-    Nome: str
-    Descricao: Optional[str] = None
-    Preco: float
-    Estoque: int = 0
-
-class ProdutoCreate(ProdutoBase):
-    pass
-
-class Produto(ProdutoBase):
-    Id: int
+    id: int
 
 class AgendamentoBase(BaseModel):
-    TutorId: int
-    PetId: int
-    ServicoId: int
-    DataHora: datetime
-    Status: str = 'Pendente'
+    tutor_id: int
+    pet_id: int
+    servico_id: int
+    data_hora: datetime
+    status: str = 'Agendado'
 
 class AgendamentoCreate(AgendamentoBase):
     pass
 
 class Agendamento(AgendamentoBase):
-    Id: int
+    id: int

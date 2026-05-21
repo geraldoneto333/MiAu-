@@ -9,17 +9,16 @@ import schemas
 
 router = APIRouter(prefix="/auth", tags=["Autenticação"])
 
-# Rota de Registro de novo usuário - [Carlos Eduardo]
 @router.post("/register", response_model=schemas.Token)
 def register(user: schemas.UserCreate, db: pymysql.connections.Connection = Depends(get_db)):
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM Usuarios WHERE Username = %s OR Email = %s", (user.username, user.email))
+    cursor.execute("SELECT * FROM usuarios WHERE username = %s OR email = %s", (user.username, user.email))
     if cursor.fetchone():
         raise HTTPException(status_code=400, detail="Usuário ou Email já cadastrado no sistema")
         
-    senha_texto_puro = get_password_hash(user.password) # Que agora apenas retorna a senha
+    senha_texto_puro = get_password_hash(user.password)
     try:
-        cursor.execute("INSERT INTO Usuarios (Username, Email, Senha) VALUES (%s, %s, %s)",
+        cursor.execute("INSERT INTO usuarios (username, email, senha_hash) VALUES (%s, %s, %s)",
                        (user.username, user.email, senha_texto_puro))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro no BD: {str(e)}")
@@ -30,13 +29,12 @@ def register(user: schemas.UserCreate, db: pymysql.connections.Connection = Depe
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-# Rota de Login que gera o token JWT - [Carlos Eduardo]
 @router.post("/login", response_model=schemas.Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: pymysql.connections.Connection = Depends(get_db)):
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM Usuarios WHERE Username = %s", (form_data.username,))
+    cursor.execute("SELECT * FROM usuarios WHERE username = %s", (form_data.username,))
     user = cursor.fetchone()
-    if not user or not verify_password(form_data.password, user['Senha']):
+    if not user or not verify_password(form_data.password, user['senha_hash']):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário ou senha incorretos",
@@ -44,6 +42,35 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: pymysql.connecti
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user['Username']}, expires_delta=access_token_expires
+        data={"sub": user['username']}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+from auth import get_current_user
+
+@router.get("/me", tags=["Autenticação"])
+def get_me(user = Depends(get_current_user)):
+    return {"username": user['username'], "email": user['email']}
+
+@router.put("/me", tags=["Autenticação"])
+def update_me(data: dict, db: pymysql.connections.Connection = Depends(get_db), user = Depends(get_current_user)):
+    cursor = db.cursor()
+    # Atualiza username e email do usuário atual
+    new_username = data.get("username", user['username'])
+    new_email = data.get("email", user['email'])
+    
+    query = "UPDATE usuarios SET username=%s, email=%s"
+    params = [new_username, new_email]
+    
+    if "password" in data and data["password"]:
+        query += ", senha_hash=%s"
+        params.append(get_password_hash(data["password"]))
+        
+    query += " WHERE id=%s"
+    params.append(user['id'])
+    
+    try:
+        cursor.execute(query, tuple(params))
+        return {"message": "Perfil atualizado com sucesso"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Erro ao atualizar: {e}")

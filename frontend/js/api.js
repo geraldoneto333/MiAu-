@@ -69,9 +69,13 @@ const API = {
     getServicos: () => apiFetch('/api/servicos'),
     deleteServico: (id) => apiFetch(`/api/servicos/${id}`, { method: 'DELETE' }),
 
-    getProdutos: () => apiFetch('/api/produtos'),
-    deleteProduto: (id) => apiFetch(`/api/produtos/${id}`, { method: 'DELETE' }),
-
     getAgendamentos: () => apiFetch('/api/agendamentos'),
-    deleteAgendamento: (id) => apiFetch(`/api/agendamentos/${id}`, { method: 'DELETE' })
+    deleteAgendamento: (id) => apiFetch(`/api/agendamentos/${id}`, { method: 'DELETE' }),
+
+    // Perfil do Usuário
+    getProfile: () => apiFetch('/auth/me'),
+    updateProfile: (data) => apiFetch('/auth/me', {
+        method: 'PUT',
+        body: JSON.stringify(data)
+    })
 };

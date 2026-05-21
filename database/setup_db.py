@@ -16,7 +16,7 @@ DB_CONFIG = {
     'password': 'root',
     'autocommit': True
 }
-DATABASE_NAME = 'aumiau_db'
+DATABASE_NAME = 'miau_db'
 
 def reset_and_setup_database():
     try:
@@ -52,13 +52,7 @@ def reset_and_setup_database():
                 # print(f"Executando: {cmd.split(chr(10))[0]}...")
                 cursor.execute(cmd)
 
-        print("Criando usuário administrador padrão em texto puro (ShardCadu)...")
-        cursor.execute(
-            "INSERT INTO Usuarios (Id, Username, Email, Senha) VALUES (%s, %s, %s, %s)",
-            (1, 'ShardCadu', 'cadu.sport@gmail.com', 'cadu123')
-        )
-
-        print("✅ Banco de dados zerado, tabelas recriadas e usuário inserido com sucesso!")
+        print("✅ Banco de dados zerado e tabelas recriadas com sucesso (incluindo usuário admin via schema)!")
 
     except pymysql.MySQLError as e:
         print(f"❌ Erro de Banco de Dados: {e}")

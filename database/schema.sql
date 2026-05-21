@@ -1,60 +1,71 @@
--- Tabela de Usuários para autenticação do sistema - [Carlos Eduardo]
-CREATE TABLE IF NOT EXISTS Usuarios (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    Username VARCHAR(100) NOT NULL UNIQUE,
-    Email VARCHAR(255) NOT NULL UNIQUE,
-    Senha VARCHAR(255) NOT NULL
+-- 1. USUÁRIOS (Para acessar o sistema)
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    senha_hash VARCHAR(255) NOT NULL,
+    ativo BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela para cadastrar os donos dos pets - [Carlos Eduardo]
-CREATE TABLE IF NOT EXISTS Tutores (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Contato VARCHAR(100),
-    Endereco VARCHAR(255),
-    Telefone VARCHAR(20)
+-- 2. TUTORES (Os donos)
+CREATE TABLE tutores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    contato VARCHAR(50) NOT NULL,
+    telefone VARCHAR(20),
+    endereco VARCHAR(200),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Pets com relacionamento (Foreign Key) para a tabela Tutores - [Carlos Eduardo]
-CREATE TABLE IF NOT EXISTS Pets (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Especie VARCHAR(50) NOT NULL,
-    Raca VARCHAR(50),
-    Sexo CHAR(1),
-    TutorId INT,
-    FOREIGN KEY (TutorId) REFERENCES Tutores(Id) ON DELETE CASCADE
+-- 3. PETS (Apenas Cachorro e Gato, vinculados ao Tutor)
+CREATE TABLE pets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tutor_id INT NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    -- Aqui garantimos que o sistema só aceite essas duas espécies
+    especie ENUM('Cachorro', 'Gato') NOT NULL, 
+    raca VARCHAR(50),
+    sexo ENUM('M', 'F') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_pet_tutor FOREIGN KEY (tutor_id) REFERENCES tutores(id) ON DELETE CASCADE
 );
 
--- Tabela de Serviços oferecidos pelo Petshop - [Carlos Eduardo]
-CREATE TABLE IF NOT EXISTS Servicos (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Descricao TEXT,
-    Preco DECIMAL(10, 2) NOT NULL
+-- 4. SERVIÇOS (O que é feito na clínica)
+CREATE TABLE servicos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL, -- Ex: "Banho e Tosa Completa - Gato"
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Produtos vendidos no Petshop - [Carlos Eduardo]
-CREATE TABLE IF NOT EXISTS Produtos (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Descricao TEXT,
-    Preco DECIMAL(10, 2) NOT NULL,
-    Estoque INT DEFAULT 0
+-- 5. AGENDAMENTOS (O núcleo do sistema)
+CREATE TABLE agendamentos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tutor_id INT NOT NULL,
+    pet_id INT NOT NULL,
+    servico_id INT NOT NULL,
+    data_hora DATETIME NOT NULL,
+    status ENUM('Agendado', 'Em Andamento', 'Concluido', 'Cancelado') DEFAULT 'Agendado',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_agend_tutor FOREIGN KEY (tutor_id) REFERENCES tutores(id) ON DELETE CASCADE,
+    CONSTRAINT fk_agend_pet FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE,
+    CONSTRAINT fk_agend_servico FOREIGN KEY (servico_id) REFERENCES servicos(id) ON DELETE CASCADE
 );
 
--- Tabela de Agendamentos conectando Tutor, Pet e Serviço - [Carlos Eduardo]
-CREATE TABLE IF NOT EXISTS Agendamentos (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    TutorId INT,
-    PetId INT,
-    ServicoId INT,
-    DataHora DATETIME NOT NULL,
-    Status VARCHAR(50) DEFAULT 'Pendente',
-    FOREIGN KEY (TutorId) REFERENCES Tutores(Id) ON DELETE CASCADE,
-    FOREIGN KEY (PetId) REFERENCES Pets(Id) ON DELETE CASCADE,
-    FOREIGN KEY (ServicoId) REFERENCES Servicos(Id) ON DELETE CASCADE
+-- 6. AVISOS (O Mural da Tela Inicial)
+CREATE TABLE avisos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo ENUM('Urgente', 'Aviso', 'Lembrete') NOT NULL,
+    mensagem TEXT NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Inserção do usuário administrador padrão em texto puro - [Carlos Eduardo]
--- INSERT INTO Usuarios (Id, Username, Email, Senha) VALUES (1, 'ShardCadu', 'cadu.sport@gmail.com', 'cadu123');
+-- ==========================================================
+-- DADOS INICIAIS (DEFAULT)
+-- ==========================================================
+
+-- Inserindo o Usuário Administrador Padrão (Conforme solicitado)
+INSERT INTO usuarios (username, email, senha_hash) 
+VALUES ('ShardCadu', 'cadu.sport@miau.com', 'cadu123');

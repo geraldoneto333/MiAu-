@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AuMiau Petshop</title>
+    <title>MiAu Petshop</title>
     <!-- Adicionado FontAwesome para os ícones - [Carlos Eduardo] -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/palette.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
 
     <!-- Tela de Login -->
     <div id="login-view" class="view">
-        <img src="imagens/logo_completo_aumiau.png" alt="AuMiau Logo Completo">
+        <img src="imagens/logo_completo_miau.png" alt="MiAu Logo Completo">
         <div class="login-card">
-            <h2>Bem-vindo ao AuMiau!</h2>
+            <h2>Bem-vindo ao MiAu!</h2>
             <form id="login-form">
                 <div class="input-group">
                     <label for="username">Usuário</label>
@@ -37,7 +37,7 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <!-- Usando o logo iconizado conforme requisito -->
-                <img src="imagens/logo_aumiau.png" alt="AuMiau Icone">
+                <img src="imagens/logo_aumiau.png" alt="MiAu Icone">
             </div>
             <nav>
                 <ul id="nav-menu">
@@ -45,11 +45,10 @@
                     <li><a href="#" data-target="tutores" class="nav-link"><i class="fas fa-user-friends"></i> <span>Tutores</span></a></li>
                     <li><a href="#" data-target="pets" class="nav-link"><i class="fas fa-paw"></i> <span>Pets</span></a></li>
                     <li><a href="#" data-target="servicos" class="nav-link"><i class="fas fa-concierge-bell"></i> <span>Serviços</span></a></li>
-                    <li><a href="#" data-target="produtos" class="nav-link"><i class="fas fa-box-open"></i> <span>Produtos</span></a></li>
+
                     <li><a href="#" data-target="agendamentos" class="nav-link"><i class="fas fa-calendar-alt"></i> <span>Agendamentos</span></a></li>
                 </ul>
             </nav>
-            <a href="#" id="btn-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
         </aside>
 
         <!-- Main Content Area -->
@@ -57,6 +56,41 @@
             <header class="topbar">
                 <button id="sidebar-toggle" class="btn-toggle"><i class="fas fa-bars"></i></button>
                 <h1 id="page-title">Home</h1>
+
+                <div class="topbar-actions">
+                    <!-- Notificações -->
+                    <div class="notification-wrapper" id="notif-wrapper">
+                        <button class="icon-btn" id="btn-notifications">
+                            <i class="far fa-bell"></i>
+                            <span class="badge" id="notif-badge">3</span>
+                        </button>
+                        <div class="dropdown-menu" id="notif-dropdown">
+                            <div class="dropdown-header">
+                                <strong>Notificações</strong>
+                                <a href="#" id="mark-read-btn" onclick="clearNotifications(event)">Ler todas</a>
+                            </div>
+                            <div class="dropdown-list" id="notif-list">
+                                <!-- Notificações preenchidas via JS -->
+                            </div>
+                            <div class="dropdown-footer">
+                                <a href="#">Ver todas as notificações</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Perfil do Usuário -->
+                    <div class="profile-wrapper" id="profile-wrapper">
+                        <button class="profile-btn" id="btn-profile">
+                            <img src="https://ui-avatars.com/api/?name=Admin&background=ffd1dc&color=111" alt="Avatar" id="user-avatar-img">
+                        </button>
+                        <div class="dropdown-menu" id="profile-dropdown">
+                            <a href="#" onclick="openModal('modal-perfil')"><i class="far fa-user"></i> Meu Perfil</a>
+                            <a href="#" onclick="openModal('modal-ajustes')"><i class="fas fa-cog"></i> Ajustes Gerais</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" id="btn-logout" class="text-danger"><i class="fas fa-sign-out-alt"></i> Sair do Sistema</a>
+                        </div>
+                    </div>
+                </div>
             </header>
             
             <div class="content-area">
@@ -64,13 +98,13 @@
                 <section id="sec-home" class="content-section">
                     <div class="home-grid">
                         <div class="home-card welcome-card">
-                            <h2><i class="fas fa-paw"></i> Bem-vindo ao AuMiau!</h2>
+                            <h2><i class="fas fa-paw"></i> Bem-vindo ao MiAu!</h2>
                             <p>Este é o sistema completo de gestão fullstack para a sua clínica pet.</p>
                             <ul class="home-features">
                                 <li><i class="fas fa-user-friends"></i> <strong>Tutores:</strong> Cadastre os donos dos animaizinhos.</li>
                                 <li><i class="fas fa-dog"></i> <strong>Pets:</strong> Registre os dados vitais de cada paciente.</li>
                                 <li><i class="fas fa-calendar-check"></i> <strong>Agendamentos:</strong> Marque consultas e banhos de forma rápida.</li>
-                                <li><i class="fas fa-box-open"></i> <strong>Produtos:</strong> Controle seu estoque e preços.</li>
+
                             </ul>
                         </div>
                         <div class="home-card mural-card">
@@ -145,19 +179,7 @@
                     </div>
                 </section>
 
-                <!-- Produtos Section -->
-                <section id="sec-produtos" class="content-section hidden">
-                    <div class="action-bar">
-                        <h2>Gestão de Produtos</h2>
-                        <button onclick="openModal('modal-produto')">+ Novo Produto</button>
-                    </div>
-                    <div class="data-table-container">
-                        <table>
-                            <thead><tr><th>ID</th><th>Nome</th><th>Preço</th><th>Estoque</th><th>Ações</th></tr></thead>
-                            <tbody id="tbody-produtos"></tbody>
-                        </table>
-                    </div>
-                </section>
+
 
                 <!-- Agendamentos Section -->
                 <section id="sec-agendamentos" class="content-section hidden">
@@ -181,7 +203,10 @@
     <!-- Modal Tutor -->
     <div id="modal-tutor" class="modal hidden">
         <div class="modal-content">
-            <h3 id="modal-tutor-title">Cadastrar Tutor</h3>
+            <div class="modal-header">
+                <h3 id="modal-tutor-title">Cadastrar Tutor</h3>
+                <button type="button" class="btn-close" onclick="closeModal('modal-tutor')"><i class="fas fa-times"></i></button>
+            </div>
             <form id="form-tutor">
                 <input type="hidden" id="tutor-id">
                 <div class="input-group">
@@ -203,7 +228,10 @@
     <!-- Modal Pet -->
     <div id="modal-pet" class="modal hidden">
         <div class="modal-content">
-            <h3 id="modal-pet-title">Cadastrar Pet</h3>
+            <div class="modal-header">
+                <h3 id="modal-pet-title">Cadastrar Pet</h3>
+                <button type="button" class="btn-close" onclick="closeModal('modal-pet')"><i class="fas fa-times"></i></button>
+            </div>
             <form id="form-pet">
                 <input type="hidden" id="pet-id">
                 <div class="input-group">
@@ -229,7 +257,10 @@
     <!-- Modal Serviço -->
     <div id="modal-servico" class="modal hidden">
         <div class="modal-content">
-            <h3 id="modal-servico-title">Cadastrar Serviço</h3>
+            <div class="modal-header">
+                <h3 id="modal-servico-title">Cadastrar Serviço</h3>
+                <button type="button" class="btn-close" onclick="closeModal('modal-servico')"><i class="fas fa-times"></i></button>
+            </div>
             <form id="form-servico">
                 <input type="hidden" id="servico-id">
                 <div class="input-group"><label>Nome</label><input type="text" id="servico-nome" required></div>
@@ -243,28 +274,15 @@
         </div>
     </div>
 
-    <!-- Modal Produto -->
-    <div id="modal-produto" class="modal hidden">
-        <div class="modal-content">
-            <h3 id="modal-produto-title">Cadastrar Produto</h3>
-            <form id="form-produto">
-                <input type="hidden" id="produto-id">
-                <div class="input-group"><label>Nome</label><input type="text" id="produto-nome" required></div>
-                <div class="input-group"><label>Descrição</label><input type="text" id="produto-descricao"></div>
-                <div class="input-group"><label>Preço</label><input type="number" step="0.01" id="produto-preco" required></div>
-                <div class="input-group"><label>Estoque</label><input type="number" id="produto-estoque" value="0" required></div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal('modal-produto')">Cancelar</button>
-                    <button type="submit" class="btn-primary">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+
 
     <!-- Modal Agendamento -->
     <div id="modal-agendamento" class="modal hidden">
         <div class="modal-content">
-            <h3 id="modal-agendamento-title">Cadastrar Agendamento</h3>
+            <div class="modal-header">
+                <h3 id="modal-agendamento-title">Cadastrar Agendamento</h3>
+                <button type="button" class="btn-close" onclick="closeModal('modal-agendamento')"><i class="fas fa-times"></i></button>
+            </div>
             <form id="form-agendamento">
                 <input type="hidden" id="agendamento-id">
                 <div class="input-group"><label>ID do Tutor</label><input type="number" id="agen-tutor-id" required></div>
@@ -279,7 +297,59 @@
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/app.js"></script>
+    <!-- Modal Ajustes -->
+    <div id="modal-ajustes" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajustes Gerais</h3>
+                <button type="button" class="btn-close" onclick="closeModal('modal-ajustes')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Nenhuma configuração disponível no momento.</p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('modal-ajustes')">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Perfil -->
+    <div id="modal-perfil" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Meu Perfil</h3>
+                <button type="button" class="btn-close" onclick="closeModal('modal-perfil')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-perfil">
+                <div class="profile-edit-header">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=ffd1dc&color=111" alt="Avatar" id="perfil-avatar-preview">
+                    <div class="profile-edit-actions">
+                        <input type="file" id="foto-upload" accept="image/*" style="display: none;">
+                        <button type="button" class="btn-cancel" onclick="document.getElementById('foto-upload').click()">Trocar Foto</button>
+                        <button type="button" class="btn-delete" id="btn-remover-foto">Remover</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Nome de Exibição</label>
+                    <input type="text" id="perfil-nome" value="Admin" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="perfil-email" value="admin@miau.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Nova Senha (deixe em branco para manter a atual)</label>
+                    <input type="password" id="perfil-senha" placeholder="••••••••">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('modal-perfil')">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=4"></script>
+    <script src="js/app.js?v=4"></script>
 </body>
 </html>

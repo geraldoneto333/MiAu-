@@ -4,7 +4,7 @@ DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
     'password': 'root',
-    'database': 'aumiau_db',
+    'database': 'miau_db',
     'cursorclass': pymysql.cursors.DictCursor,
     'autocommit': True
 }
