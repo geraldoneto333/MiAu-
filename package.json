@@ -2,6 +2,6 @@
   "name": "miau",
   "private": true,
   "scripts": {
-    "build": "mkdir -p public && cp -r frontend/. public/"
+    "build": "mkdir -p public && cp frontend/index.html public/ && cp -r frontend/css frontend/js frontend/imagens public/"
   }
 }

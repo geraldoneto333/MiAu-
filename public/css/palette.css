@@ -1,0 +1,13 @@
+/* Paleta de Cores extraída da Identidade Visual */
+:root {
+  /* Cor Dominante */
+  --cor-dominante: #e2dbd2;
+
+  /* Paleta Extraída */
+  --cor-paleta-1: #e3dcd2;
+  --cor-paleta-2: #3c5748;
+  --cor-paleta-3: #b69b7a;
+  --cor-paleta-4: #af7f4b;
+  --cor-paleta-5: #7d5d44;
+  --cor-paleta-6: #8ab2a6;
+}

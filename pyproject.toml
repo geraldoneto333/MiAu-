@@ -1,0 +1,20 @@
+[project]
+name = "miau"
+version = "1.0.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "pymysql",
+    "python-jose[cryptography]",
+    "passlib[bcrypt]",
+    "python-multipart",
+    "pydantic",
+    "email-validator",
+    "mangum",
+]
+
+[tool.vercel.scripts]
+build = "npm run build"
+
+[tool.vercel]
+entrypoint = "backend.app_api:app"
