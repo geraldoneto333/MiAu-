@@ -37,10 +37,10 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <!-- Usando o logo iconizado conforme requisito -->
-                <img src="imagens/logo_aumiau.png" alt="MiAu Icone">
+                <img src="imagens/logo_completo_miau.png" alt="MiAu Icone">
             </div>
             <nav>
-                <ul id="nav-menu">
+                <ul>
                     <li><a href="#" data-target="home" class="nav-link active"><i class="fas fa-home"></i> <span>Home</span></a></li>
                     <li><a href="#" data-target="tutores" class="nav-link"><i class="fas fa-user-friends"></i> <span>Tutores</span></a></li>
                     <li><a href="#" data-target="pets" class="nav-link"><i class="fas fa-paw"></i> <span>Pets</span></a></li>
@@ -71,9 +71,6 @@
                             </div>
                             <div class="dropdown-list" id="notif-list">
                                 <!-- Notificações preenchidas via JS -->
-                            </div>
-                            <div class="dropdown-footer">
-                                <a href="#">Ver todas as notificações</a>
                             </div>
                         </div>
                     </div>
@@ -109,14 +106,8 @@
                         </div>
                         <div class="home-card mural-card">
                             <h2><i class="fas fa-thumbtack"></i> Mural de Avisos</h2>
-                            <div class="aviso">
-                                <strong>[Urgente]</strong> Repor estoque de ração para cães filhotes.
-                            </div>
-                            <div class="aviso">
-                                <strong>[Aviso]</strong> O Dr. Carlos estará de férias na próxima semana.
-                            </div>
-                            <div class="aviso">
-                                <strong>[Lembrete]</strong> Revisar agenda de banho e tosa para sábado.
+                            <div id="mural-list">
+                                <div class="aviso">Carregando avisos...</div>
                             </div>
                         </div>
                     </div>
@@ -126,7 +117,7 @@
                 <section id="sec-tutores" class="content-section hidden">
                     <div class="action-bar">
                         <h2>Gestão de Tutores</h2>
-                        <button onclick="openModal('modal-tutor')">+ Novo Tutor</button>
+                        <button onclick="openCreateModal('modal-tutor')">+ Novo Tutor</button>
                     </div>
                     <div class="data-table-container">
                         <table>
@@ -147,7 +138,7 @@
                 <section id="sec-pets" class="content-section hidden">
                     <div class="action-bar">
                         <h2>Gestão de Pets</h2>
-                        <button onclick="openModal('modal-pet')">+ Novo Pet</button>
+                        <button onclick="openCreateModal('modal-pet')">+ Novo Pet</button>
                     </div>
                     <div class="data-table-container">
                         <table>
@@ -169,7 +160,7 @@
                 <section id="sec-servicos" class="content-section hidden">
                     <div class="action-bar">
                         <h2>Gestão de Serviços</h2>
-                        <button onclick="openModal('modal-servico')">+ Novo Serviço</button>
+                        <button onclick="openCreateModal('modal-servico')">+ Novo Serviço</button>
                     </div>
                     <div class="data-table-container">
                         <table>
@@ -185,7 +176,7 @@
                 <section id="sec-agendamentos" class="content-section hidden">
                     <div class="action-bar">
                         <h2>Gestão de Agendamentos</h2>
-                        <button onclick="openModal('modal-agendamento')">+ Novo Agendamento</button>
+                        <button onclick="openAgendamentoModal()">+ Novo Agendamento</button>
                     </div>
                     <div class="data-table-container">
                         <table>
@@ -240,11 +231,21 @@
                 </div>
                 <div class="input-group">
                     <label>Espécie</label>
-                    <input type="text" id="pet-especie" required>
+                    <select id="pet-especie" required>
+                        <option value="Cachorro">Cachorro</option>
+                        <option value="Gato">Gato</option>
+                    </select>
                 </div>
                 <div class="input-group">
-                    <label>Tutor ID</label>
-                    <input type="number" id="pet-tutor-id" required>
+                    <label>Sexo</label>
+                    <select id="pet-sexo" required>
+                        <option value="M">Macho</option>
+                        <option value="F">Fêmea</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Tutor</label>
+                    <select id="pet-tutor-id" required></select>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal('modal-pet')">Cancelar</button>
@@ -285,9 +286,9 @@
             </div>
             <form id="form-agendamento">
                 <input type="hidden" id="agendamento-id">
-                <div class="input-group"><label>ID do Tutor</label><input type="number" id="agen-tutor-id" required></div>
-                <div class="input-group"><label>ID do Pet</label><input type="number" id="agen-pet-id" required></div>
-                <div class="input-group"><label>ID do Serviço</label><input type="number" id="agen-servico-id" required></div>
+                <div class="input-group"><label>Tutor</label><select id="agen-tutor-id" required></select></div>
+                <div class="input-group"><label>Pet</label><select id="agen-pet-id" required></select></div>
+                <div class="input-group"><label>Serviço</label><select id="agen-servico-id" required></select></div>
                 <div class="input-group"><label>Data e Hora</label><input type="datetime-local" id="agen-datahora" required></div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal('modal-agendamento')">Cancelar</button>

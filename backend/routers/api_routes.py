@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 import pymysql
 from database import get_db
 from auth import get_current_user
@@ -51,6 +51,13 @@ def read_pets(db: pymysql.connections.Connection = Depends(get_db)):
     cursor.execute("SELECT * FROM pets")
     return cursor.fetchall()
 
+@router.put("/pets/{pet_id}", response_model=schemas.Pet, tags=["Pets"])
+def update_pet(pet_id: int, pet: schemas.PetCreate, db: pymysql.connections.Connection = Depends(get_db)):
+    cursor = db.cursor()
+    cursor.execute("UPDATE pets SET nome=%s, especie=%s, raca=%s, sexo=%s, tutor_id=%s WHERE id=%s",
+                   (pet.nome, pet.especie, pet.raca, pet.sexo, pet.tutor_id, pet_id))
+    return {**pet.dict(), "id": pet_id}
+
 @router.delete("/pets/{pet_id}", tags=["Pets"])
 def delete_pet(pet_id: int, db: pymysql.connections.Connection = Depends(get_db)):
     cursor = db.cursor()
@@ -96,3 +103,24 @@ def create_agendamento(agen: schemas.AgendamentoCreate, db: pymysql.connections.
     cursor.execute("INSERT INTO agendamentos (tutor_id, pet_id, servico_id, data_hora, status) VALUES (%s, %s, %s, %s, %s)",
                    (agen.tutor_id, agen.pet_id, agen.servico_id, agen.data_hora.strftime('%Y-%m-%d %H:%M:%S'), agen.status))
     return {**agen.dict(), "id": cursor.lastrowid}
+
+# --- AVISOS ---
+@router.get("/avisos", response_model=List[schemas.Aviso], tags=["Avisos"])
+def read_avisos(db: pymysql.connections.Connection = Depends(get_db)):
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM avisos ORDER BY data_criacao DESC")
+    return cursor.fetchall()
+
+@router.post("/avisos", response_model=schemas.Aviso, tags=["Avisos"])
+def create_aviso(aviso: schemas.AvisoCreate, db: pymysql.connections.Connection = Depends(get_db)):
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO avisos (tipo, mensagem) VALUES (%s, %s)",
+                   (aviso.tipo, aviso.mensagem))
+    aviso_id = cursor.lastrowid
+    return {**aviso.dict(), "id": aviso_id}
+
+@router.delete("/avisos/{aviso_id}", tags=["Avisos"])
+def delete_aviso(aviso_id: int, db: pymysql.connections.Connection = Depends(get_db)):
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM avisos WHERE id=%s", (aviso_id,))
+    return {"message": "Aviso deletado"}

@@ -76,6 +76,28 @@ body {
     border-color: #c9cdd4;
 }
 
+.input-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e5e6eb;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #1d2129;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    transition: all 0.2s cubic-bezier(0, 0, 1, 1);
+}
+
+.input-group select:hover {
+    border-color: #c9cdd4;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: var(--cor-dominante);
+    box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
+}
+
 .input-group input:focus {
     outline: none;
     border-color: var(--cor-dominante);
@@ -157,7 +179,7 @@ button.btn-primary:active {
     margin-bottom: 0.5rem;
 }
 
-.sidebar nav ul li a, .logout-btn {
+.sidebar nav ul li a {
     display: flex;
     align-items: center;
     padding: 1rem 1.5rem;
@@ -168,24 +190,23 @@ button.btn-primary:active {
     border-left: 4px solid transparent;
 }
 
-.sidebar nav ul li a i, .logout-btn i {
+.sidebar nav ul li a i {
     font-size: 1.2rem;
     width: 30px;
     text-align: center;
     margin-right: 10px;
 }
 
-.sidebar.collapsed nav ul li a span,
-.sidebar.collapsed .logout-btn span {
+.sidebar.collapsed nav ul li a span {
     display: none;
 }
 
-.sidebar.collapsed nav ul li a, .sidebar.collapsed .logout-btn {
+.sidebar.collapsed nav ul li a {
     padding: 1rem;
     justify-content: center;
 }
 
-.sidebar.collapsed nav ul li a i, .sidebar.collapsed .logout-btn i {
+.sidebar.collapsed nav ul li a i {
     margin-right: 0;
 }
 
@@ -195,12 +216,6 @@ button.btn-primary:active {
     color: #000000 !important; /* Força que as letras continuem escuras e visíveis */
     border-left-color: #000000;
     font-weight: 800;
-}
-
-.logout-btn {
-    margin-top: auto;
-    color: #a70000; /* Vermelho escuro para combinar e dar contraste */
-    font-weight: 700;
 }
 
 /* Main Content */
@@ -503,11 +518,6 @@ td button {
     margin-right: 0.5rem;
 }
 
-.btn-edit {
-    background-color: #ffc107;
-    color: #000;
-}
-
 .btn-delete {
     background-color: #f53f3f;
     color: white;
@@ -681,19 +691,16 @@ td button {
         width: 250px; /* Força a manter 250px ao invés dos 80px do desktop */
     }
 
-    .sidebar.collapsed nav ul li a span,
-    .sidebar.collapsed .logout-btn span {
+    .sidebar.collapsed nav ul li a span {
         display: inline; /* Volta a exibir os textos no celular */
     }
 
-    .sidebar.collapsed nav ul li a, 
-    .sidebar.collapsed .logout-btn {
+    .sidebar.collapsed nav ul li a {
         justify-content: flex-start;
         padding: 1rem 1.5rem;
     }
 
-    .sidebar.collapsed nav ul li a i, 
-    .sidebar.collapsed .logout-btn i {
+    .sidebar.collapsed nav ul li a i {
         margin-right: 10px;
     }
 

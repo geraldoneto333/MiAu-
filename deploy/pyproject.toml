@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [tool.vercel.scripts]
-build = "npm run build"
+build = "mkdir -p public && cp frontend/index.html public/ && cp -r frontend/css frontend/js frontend/imagens public/"
 
 [tool.vercel]
 entrypoint = "backend.app_api:app"

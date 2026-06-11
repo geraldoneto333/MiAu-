@@ -11,7 +11,7 @@ O MiAu usa **CSS customizado inspirado no Arco Design System** (ByteDance), **se
 
 ### Paleta de Cores (CSS Custom Properties)
 
-Definidas em `palette.css`, extraídas da identidade visual via [`script_cores.py`](../script_cores.py):
+Definidas em `palette.css`, extraídas da identidade visual do logo (`frontend/imagens/logo_completo_miau.png`):
 
 | Token | Hex | Uso |
 |-------|-----|-----|

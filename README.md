@@ -39,6 +39,29 @@ O MiAu não é apenas para Desktops; a interface CSS possui Media Queries otimiz
 
 ## 🚀 Como Executar o Projeto Localmente
 
+### Estrutura do Projeto
+
+```
+MiAu/
+├── .env                  # Variáveis locais (não commitado)
+├── .gitignore
+├── README.md
+├── app.py                # Entry point local (uvicorn)
+├── api/                  # Handler serverless Vercel
+├── backend/              # FastAPI, auth, routers, schemas
+├── database/             # Schema SQL e scripts de setup
+├── deploy/               # Configuração de deploy (Vercel)
+│   ├── vercel.json
+│   ├── package.json
+│   ├── pyproject.toml
+│   └── .env.example
+├── frontend/             # SPA (fonte: HTML, CSS, JS, imagens)
+├── public/               # Build estático (gerado a partir de frontend/)
+└── cursor-rules/         # Documentação para agentes
+```
+
+> **Deploy:** `vercel.json` e `pyproject.toml` na raiz são symlinks para `deploy/` — a Vercel exige esses arquivos na raiz do repositório. Edite sempre em `deploy/`.
+
 ### 1. Pré-requisitos
 - Python instalado.
 - Servidor MariaDB local rodando (porta 3306).

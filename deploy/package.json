@@ -1,0 +1,7 @@
+{
+  "name": "miau",
+  "private": true,
+  "scripts": {
+    "build": "cd .. && mkdir -p public && cp frontend/index.html public/ && cp -r frontend/css frontend/js frontend/imagens public/"
+  }
+}

@@ -1,9 +1,14 @@
-import os
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 import pymysql
 from database import get_db
-from auth import verify_password, get_password_hash, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from auth import (
+    verify_password,
+    get_password_hash,
+    create_access_token,
+    get_current_user,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+)
 from datetime import timedelta
 import schemas
 
@@ -46,8 +51,6 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: pymysql.connecti
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-from auth import get_current_user
-
 @router.get("/me", tags=["Autenticação"])
 def get_me(user = Depends(get_current_user)):
     return {"username": user['username'], "email": user['email']}
@@ -55,7 +58,6 @@ def get_me(user = Depends(get_current_user)):
 @router.put("/me", tags=["Autenticação"])
 def update_me(data: dict, db: pymysql.connections.Connection = Depends(get_db), user = Depends(get_current_user)):
     cursor = db.cursor()
-    # Atualiza username e email do usuário atual
     new_username = data.get("username", user['username'])
     new_email = data.get("email", user['email'])
     

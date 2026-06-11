@@ -59,3 +59,14 @@ class AgendamentoCreate(AgendamentoBase):
 
 class Agendamento(AgendamentoBase):
     id: int
+
+class AvisoBase(BaseModel):
+    tipo: str
+    mensagem: str
+
+class AvisoCreate(AvisoBase):
+    pass
+
+class Aviso(AvisoBase):
+    id: int
+    data_criacao: Optional[datetime] = None

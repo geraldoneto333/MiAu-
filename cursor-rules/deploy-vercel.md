@@ -65,10 +65,11 @@ Aplique as variáveis para **Production**, **Preview** e **Development**.
 
 ## Passo 4 — Deploy Automático
 
-O projeto inclui `vercel.json` na raiz. Ao fazer push para `main` no GitHub, a Vercel detecta e faz deploy.
+Configuração de deploy em `deploy/`. Na raiz, `vercel.json` e `pyproject.toml` são **symlinks** para `deploy/` (exigência da plataforma Vercel). Ao fazer push para `main`, a Vercel detecta e faz deploy.
 
 Estrutura de deploy:
-- `npm run build` — copia `frontend/` → `public/` (Vercel só serve estáticos de `public/`)
+- Build (via `deploy/pyproject.toml`) — copia `frontend/` → `public/` (Vercel só serve estáticos de `public/`)
+- Local: `cd deploy && npm run build`
 - `api/index.py` — FastAPI serverless (rotas `/auth/*`, `/api/*`, `/docs`)
 - `public/` — gerado no build (não commitado; ver `.gitignore`)
 - `api/requirements.txt` — dependências Python
@@ -94,11 +95,13 @@ Estrutura de deploy:
 
 | Arquivo | Função |
 |---------|--------|
-| `vercel.json` | Rewrites, runtime Python, rotas estáticas |
+| `deploy/vercel.json` | Rewrites, runtime Python, rotas estáticas |
+| `deploy/pyproject.toml` | Deps Python + build + entrypoint Vercel |
+| `deploy/package.json` | Build local (`npm run build`) |
+| `deploy/.env.example` | Template de variáveis (não commitar `.env`) |
 | `api/index.py` | Handler serverless FastAPI |
 | `api/requirements.txt` | Deps Python para Vercel |
 | `backend/app_api.py` | App FastAPI sem StaticFiles |
-| `.env.example` | Template de variáveis (não commitar `.env`) |
 
 ## Segurança
 

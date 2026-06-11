@@ -79,6 +79,28 @@ Ao terminar uma sessão de trabalho com agente, adicione uma nova seção no for
 
 ---
 
-## Sessão 2 — (próxima)
+## Sessão 2 — 2026-06-09
+
+**Motivação:** Limpeza de código morto e conclusão de features incompletas (CRUD, avisos, mural).
+
+**Entregas:**
+- Removido stack Express legado (`frontend/` e `backend/`)
+- Removido CSS `.logout-btn` e `.btn-edit`
+- Limpos imports Python mortos
+- Adicionados `/api/avisos` (GET/POST/DELETE) e `PUT /api/pets/{id}`
+- Wired submit dos modais CRUD (tutor, pet, serviço, agendamento)
+- Mural e notificações alimentados por `API.getAvisos()`
+- Logo sidebar corrigido; link morto removido
+- `public/` sincronizado via `npm run build`
+
+**Backlog restante:**
+- Edit mode nos modais (PUT tutores/pets na UI)
+- bcrypt para senhas
+- Módulo produtos/estoque
+- Modal Ajustes funcional
+
+---
+
+## Sessão 3 — (próxima)
 
 *(Adicionar aqui)*

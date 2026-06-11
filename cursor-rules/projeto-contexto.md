@@ -42,11 +42,12 @@ MariaDB / MySQL (miau_db)
 | `backend/schemas.py` | **Ativo** | Modelos Pydantic |
 | `database/` | **Ativo** | schema.sql, setup_db.py, popular_teste.py |
 | `frontend/` | **Ativo** | SPA (index.html, css/, js/, imagens/) |
+| `public/` | **Ativo** | Build estático (copiado de `frontend/` no deploy) |
 | `api/index.py` | **Ativo** | Entry point serverless Vercel |
 | `cursor-rules/` | **Ativo** | Documentação para agentes |
-| `backend/app.js`, `backend/bin/` | Legado | Express.js — não usado no fluxo principal |
-| `frontend/app.js`, `frontend/views/` | Legado | Express/EJS — não usado no fluxo principal |
-| `script_cores.py` | Utilitário | Extrai paleta de cores da identidade visual |
+| `backend/app.js`, `backend/bin/` | **Removido** | Express legado eliminado |
+| `frontend/app.js`, `frontend/views/` | **Removido** | Express/EJS legado eliminado |
+| `deploy/` | **Ativo** | Config Vercel (`vercel.json`, `package.json`, `pyproject.toml`, `.env.example`) |
 
 ## Módulos / Features
 
@@ -54,13 +55,14 @@ MariaDB / MySQL (miau_db)
 |--------|--------|---------------------|
 | Autenticação JWT | Funcional | `auth_routes.py`, `frontend/js/api.js` |
 | Perfil + Avatar | Funcional | `modal-perfil`, localStorage `aumiau_avatar` |
-| Home / Mural | Parcial | Mural é HTML estático; tabela `avisos` sem API |
-| Notificações | Mock | Array `mockNotifications` em `app.js` |
-| Tutores CRUD | Parcial | List + delete OK; create modal não wired |
-| Pets CRUD | Parcial | List + delete OK; create modal não wired; sem PUT backend |
-| Serviços CRUD | Parcial | List + delete OK; falta create no frontend |
-| Agendamentos CRUD | Parcial | List + delete OK; falta create no frontend |
-| Produtos/Estoque | Não existe | Mencionado no README, não implementado |
+| Home / Mural | Funcional | `#mural-list` via `API.getAvisos()` |
+| Notificações | Funcional | Dropdown alimentado por `/api/avisos` |
+| Tutores CRUD | Create + delete | `#form-tutor` wired em `app.js` |
+| Pets CRUD | Create + delete | `#form-pet` com selects; PUT backend |
+| Serviços CRUD | Create + delete | `#form-servico` wired |
+| Agendamentos CRUD | Create + delete | `#form-agendamento` com selects |
+| Produtos/Estoque | Não existe | Mencionado no README |
+| Modal Ajustes | Placeholder | Backlog documentado |
 
 ## Fluxo de Autenticação
 
@@ -88,10 +90,10 @@ MariaDB / MySQL (miau_db)
 | Recurso | GET | POST | PUT | DELETE |
 |---------|-----|------|-----|--------|
 | `/api/tutores` | Sim | Sim | Sim (`/{id}`) | Sim |
-| `/api/pets` | Sim | Sim | **Não** | Sim |
-| `/api/servicos` | Sim | Sim | **Não** | Sim |
-| `/api/agendamentos` | Sim | Sim | **Não** | Sim |
-| `/api/avisos` | **Não existe** | — | — | — |
+| `/api/pets` | Sim | Sim | Sim (`/{id}`) | Sim |
+| `/api/servicos` | Sim | Sim | **Nao** | Sim |
+| `/api/agendamentos` | Sim | Sim | **Nao** | Sim |
+| `/api/avisos` | Sim | Sim | **Nao** | Sim |
 
 Documentação interativa: `/docs` (Swagger), `/redoc`
 
@@ -125,7 +127,7 @@ python app.py
 
 ## Variáveis de Ambiente
 
-Ver `.env.example` na raiz. Defaults permitem rodar local sem `.env`.
+Ver `deploy/.env.example`. Defaults em `backend/database.py` permitem rodar local sem `.env`.
 
 | Variável | Default local | Descrição |
 |----------|---------------|-----------|
@@ -135,17 +137,13 @@ Ver `.env.example` na raiz. Defaults permitem rodar local sem `.env`.
 | `DB_NAME` | `miau_db` | Nome do database |
 | `JWT_SECRET_KEY` | (dev key) | Secret para JWT — **obrigatório trocar em produção** |
 
-## Dívidas Técnicas / Backlog
+## Dividas Tecnicas / Backlog
 
-Prioridade para agentes futuros:
-
-1. **CRUD frontend incompleto** — wire submit dos modais em `app.js`; adicionar `createServico`/`createAgendamento` em `api.js`
-2. **PUT pets** — backend não tem rota; frontend tem `updatePet` unused
-3. **API avisos** — tabela existe, mural estático, notificações mock
-4. **Senhas texto puro** — `passlib[bcrypt]` listado mas não usado
-5. **Logo ausente** — `index.html` referencia `logo_aumiau.png`; só existe `logo_completo_miau.png`
-6. **Módulo produtos/estoque** — mencionado no README, não implementado
-7. **Hash de senhas** — implementar bcrypt em produção
+1. **Edit mode nos modais** — PUT tutores/pets no UI (backend parcialmente pronto)
+2. **Senhas texto puro** — implementar bcrypt
+3. **Modulo produtos/estoque** — mencionado no README, nao implementado
+4. **POST /auth/register** — backend existe, UI de login nao expoe
+5. **Modal Ajustes** — placeholder sem configuracoes reais
 
 ## Deploy
 
