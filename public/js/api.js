@@ -14,7 +14,7 @@ async function apiFetch(endpoint, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL${endpoint}`, {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
         headers
     });
@@ -24,10 +24,10 @@ async function apiFetch(endpoint, options = {}) {
         window.location.reload();
     }
 
-    const data = await response.json();
-    
+    const data = await response.json().catch(() => ({}));
+
     if (!response.ok) {
-        throw new Error(data.detail || 'Erro na requisicao');
+        throw new Error(data.detail || `Erro HTTP ${response.status}`);
     }
 
     return data;
@@ -44,8 +44,8 @@ const API = {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData
         });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.detail);
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.detail || `Erro HTTP ${response.status}`);
         return data;
     },
 
@@ -61,10 +61,12 @@ const API = {
 
     getServicos: () => apiFetch('/api/servicos'),
     createServico: (servico) => apiFetch('/api/servicos', { method: 'POST', body: JSON.stringify(servico) }),
+    updateServico: (id, servico) => apiFetch(`/api/servicos/${id}`, { method: 'PUT', body: JSON.stringify(servico) }),
     deleteServico: (id) => apiFetch(`/api/servicos/${id}`, { method: 'DELETE' }),
 
     getAgendamentos: () => apiFetch('/api/agendamentos'),
     createAgendamento: (agendamento) => apiFetch('/api/agendamentos', { method: 'POST', body: JSON.stringify(agendamento) }),
+    updateAgendamento: (id, agendamento) => apiFetch(`/api/agendamentos/${id}`, { method: 'PUT', body: JSON.stringify(agendamento) }),
     deleteAgendamento: (id) => apiFetch(`/api/agendamentos/${id}`, { method: 'DELETE' }),
 
     getAvisos: () => apiFetch('/api/avisos'),

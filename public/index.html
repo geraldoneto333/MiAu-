@@ -7,27 +7,29 @@
     <!-- Adicionado FontAwesome para os ícones - [Carlos Eduardo] -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/palette.css">
-    <link rel="stylesheet" href="css/style.css?v=4">
+    <link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body>
 
     <!-- Tela de Login -->
     <div id="login-view" class="view">
-        <img src="imagens/logo_completo_miau.png" alt="MiAu Logo Completo">
-        <div class="login-card">
-            <h2>Bem-vindo ao MiAu!</h2>
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="username">Usuário</label>
-                    <input type="text" id="username" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" required>
-                </div>
-                <button type="submit" class="btn-primary">Entrar</button>
-                <p id="login-error" style="color: red; display: none; margin-top: 10px;"></p>
-            </form>
+        <div class="login-view-inner">
+            <img src="imagens/logo_completo_miau.png" alt="MiAu Logo Completo">
+            <div class="login-card">
+                <h2>Bem-vindo ao MiAu!</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="username">Usuário</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Senha</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Entrar</button>
+                    <p id="login-error" style="color: red; display: none; margin-top: 10px;"></p>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -42,8 +44,7 @@
             <nav>
                 <ul>
                     <li><a href="#" data-target="home" class="nav-link active"><i class="fas fa-home"></i> <span>Home</span></a></li>
-                    <li><a href="#" data-target="tutores" class="nav-link"><i class="fas fa-user-friends"></i> <span>Tutores</span></a></li>
-                    <li><a href="#" data-target="pets" class="nav-link"><i class="fas fa-paw"></i> <span>Pets</span></a></li>
+                    <li><a href="#" data-target="tutores-pets" class="nav-link"><i class="fas fa-user-friends"></i> <span>Tutores & Pets</span></a></li>
                     <li><a href="#" data-target="servicos" class="nav-link"><i class="fas fa-concierge-bell"></i> <span>Serviços</span></a></li>
 
                     <li><a href="#" data-target="agendamentos" class="nav-link"><i class="fas fa-calendar-alt"></i> <span>Agendamentos</span></a></li>
@@ -98,10 +99,8 @@
                             <h2><i class="fas fa-paw"></i> Bem-vindo ao MiAu!</h2>
                             <p>Este é o sistema completo de gestão fullstack para a sua clínica pet.</p>
                             <ul class="home-features">
-                                <li><i class="fas fa-user-friends"></i> <strong>Tutores:</strong> Cadastre os donos dos animaizinhos.</li>
-                                <li><i class="fas fa-dog"></i> <strong>Pets:</strong> Registre os dados vitais de cada paciente.</li>
+                                <li><i class="fas fa-user-friends"></i> <strong>Tutores & Pets:</strong> Cadastre donos, fotos e todos os pets em um só lugar.</li>
                                 <li><i class="fas fa-calendar-check"></i> <strong>Agendamentos:</strong> Marque consultas e banhos de forma rápida.</li>
-
                             </ul>
                         </div>
                         <div class="home-card mural-card">
@@ -113,47 +112,21 @@
                     </div>
                 </section>
 
-                <!-- Tutores Section -->
-                <section id="sec-tutores" class="content-section hidden">
+                <!-- Tutores & Pets Section -->
+                <section id="sec-tutores-pets" class="content-section hidden">
                     <div class="action-bar">
-                        <h2>Gestão de Tutores</h2>
-                        <button onclick="openCreateModal('modal-tutor')">+ Novo Tutor</button>
+                        <h2>Gestão de Tutores e Pets</h2>
+                        <div class="action-bar-actions">
+                            <button type="button" onclick="openCreateModal('modal-tutor')">+ Novo Tutor</button>
+                            <button type="button" onclick="openCreateModal('modal-pet')">+ Novo Pet</button>
+                        </div>
                     </div>
-                    <div class="data-table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nome</th>
-                                    <th>Contato</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-tutores"></tbody>
-                        </table>
+                    <div class="tutores-pets-search-wrap">
+                        <i class="fas fa-search tutores-pets-search-icon"></i>
+                        <input type="search" id="tutores-pets-search" class="tutores-pets-search" placeholder="Buscar por nome, e-mail, telefone, endereço, pet ou espécie..." autocomplete="off">
                     </div>
-                </section>
-
-                <!-- Pets Section -->
-                <section id="sec-pets" class="content-section hidden">
-                    <div class="action-bar">
-                        <h2>Gestão de Pets</h2>
-                        <button onclick="openCreateModal('modal-pet')">+ Novo Pet</button>
-                    </div>
-                    <div class="data-table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nome</th>
-                                    <th>Espécie</th>
-                                    <th>Tutor ID</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-pets"></tbody>
-                        </table>
-                    </div>
+                    <p class="section-hint">Clique em um tutor para expandir e ver ou gerenciar os pets vinculados.</p>
+                    <div id="tutores-pets-list" class="tutores-pets-list"></div>
                 </section>
                 
                 <!-- Serviços Section -->
@@ -180,9 +153,24 @@
                     </div>
                     <div class="data-table-container">
                         <table>
-                            <thead><tr><th>ID</th><th>Tutor (ID)</th><th>Pet (ID)</th><th>Serviço (ID)</th><th>Data/Hora</th><th>Status</th><th>Ações</th></tr></thead>
+                            <thead><tr><th>ID</th><th>Tutor</th><th>Pet</th><th>Serviço</th><th>Data/Hora</th><th>Status</th><th>Ações</th></tr></thead>
                             <tbody id="tbody-agendamentos"></tbody>
                         </table>
+                    </div>
+                    <div class="agenda-calendario-container">
+                        <div class="agenda-header">
+                            <button type="button" id="agenda-prev" class="agenda-nav-btn" aria-label="Mês anterior">◀</button>
+                            <h3 id="agenda-mes-ano">Agenda do Mês</h3>
+                            <button type="button" id="agenda-next" class="agenda-nav-btn" aria-label="Próximo mês">▶</button>
+                        </div>
+                        <div class="agenda-weekdays">
+                            <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                        </div>
+                        <div id="agenda-grid" class="agenda-grid"></div>
+                        <div id="agenda-dia-detalhe" class="agenda-dia-detalhe hidden">
+                            <h4 id="agenda-dia-titulo"></h4>
+                            <ul id="agenda-dia-lista"></ul>
+                        </div>
                     </div>
                 </section>
                 
@@ -200,13 +188,29 @@
             </div>
             <form id="form-tutor">
                 <input type="hidden" id="tutor-id">
+                <div class="tutor-foto-upload">
+                    <img src="https://ui-avatars.com/api/?name=Tutor&background=ffd1dc&color=111" alt="Foto do tutor" id="tutor-foto-preview" class="tutor-foto-preview">
+                    <div class="tutor-foto-actions">
+                        <input type="file" id="tutor-foto-upload" accept="image/*" style="display: none;">
+                        <button type="button" class="btn-cancel btn-sm" onclick="document.getElementById('tutor-foto-upload').click()">Carregar Foto</button>
+                        <button type="button" class="btn-delete btn-sm" id="btn-remover-foto-tutor">Remover</button>
+                    </div>
+                </div>
                 <div class="input-group">
-                    <label>Nome</label>
+                    <label for="tutor-nome">Nome</label>
                     <input type="text" id="tutor-nome" required>
                 </div>
                 <div class="input-group">
-                    <label>Contato</label>
-                    <input type="text" id="tutor-contato">
+                    <label for="tutor-contato">E-mail / Contato</label>
+                    <input type="email" id="tutor-contato" placeholder="ex: joao@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="tutor-telefone">Telefone</label>
+                    <input type="tel" id="tutor-telefone" placeholder="ex: (11) 98888-1111">
+                </div>
+                <div class="input-group">
+                    <label for="tutor-endereco">Endereço</label>
+                    <input type="text" id="tutor-endereco" placeholder="ex: Rua das Flores, 123">
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal('modal-tutor')">Cancelar</button>
@@ -290,6 +294,15 @@
                 <div class="input-group"><label>Pet</label><select id="agen-pet-id" required></select></div>
                 <div class="input-group"><label>Serviço</label><select id="agen-servico-id" required></select></div>
                 <div class="input-group"><label>Data e Hora</label><input type="datetime-local" id="agen-datahora" required></div>
+                <div class="input-group">
+                    <label>Status</label>
+                    <select id="agen-status" required>
+                        <option value="Agendado">Agendado</option>
+                        <option value="Em Andamento">Em Andamento</option>
+                        <option value="Concluido">Concluído</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal('modal-agendamento')">Cancelar</button>
                     <button type="submit" class="btn-primary">Salvar</button>
@@ -350,7 +363,7 @@
         </div>
     </div>
 
-    <script src="js/api.js?v=4"></script>
-    <script src="js/app.js?v=4"></script>
+    <script src="js/api.js?v=11"></script>
+    <script src="js/app.js?v=11"></script>
 </body>
 </html>

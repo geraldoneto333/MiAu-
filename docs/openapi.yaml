@@ -1,0 +1,1213 @@
+openapi: 3.0.3
+info:
+  title: MiAu API REST
+  description: '
+
+    ## MiAu — API REST de Gestão Petshop
+
+
+    Backend **FastAPI** integrado ao banco **MariaDB/MySQL** (`miau_db`).
+
+
+    ### Autenticação JWT
+
+
+    1. `POST /auth/login` — envie `username` e `password` (form-urlencoded)
+
+    2. Copie o `access_token` retornado
+
+    3. Clique em **Authorize** e informe: `Bearer {token}`
+
+    4. Rotas `/api/*` exigem token válido
+
+
+    **Usuário padrão:** `ShardCadu` / `cadu123`
+
+
+    ### Tabelas do banco
+
+
+    | Tabela | Endpoints |
+
+    |--------|-----------|
+
+    | `usuarios` | `/auth/login`, `/auth/register`, `/auth/me` |
+
+    | `tutores` | `/api/tutores` |
+
+    | `pets` | `/api/pets` |
+
+    | `servicos` | `/api/servicos` |
+
+    | `agendamentos` | `/api/agendamentos` |
+
+    | `avisos` | `/api/avisos` |
+
+
+    Documentação completa: repositório → `docs/API-Swagger.md`
+
+    '
+  version: 1.0.0
+  contact:
+    name: Carlos Eduardo (Cadu)
+    url: https://github.com/Dev-Carlos-Alves/MiAu-
+  license:
+    name: Projeto Acadêmico — Henning 2026.1
+servers:
+- url: http://127.0.0.1:8000
+  description: Local (python app.py)
+- url: https://mi-au.vercel.app
+  description: Producao Vercel
+paths:
+  /auth/register:
+    post:
+      tags:
+      - Autenticação
+      summary: Registrar novo usuário
+      description: Cria registro na tabela `usuarios` e retorna token JWT.
+      operationId: register_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /auth/login:
+    post:
+      tags:
+      - Autenticação
+      summary: Login (obter token JWT)
+      description: 'Autentica com username/password (form-urlencoded). Use o token em `Authorization: Bearer`.'
+      operationId: login_auth_login_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_login_auth_login_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /auth/me:
+    get:
+      tags:
+      - Autenticação
+      summary: Obter perfil autenticado
+      description: Retorna username e email do usuário logado. Requer JWT.
+      operationId: get_me_auth_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+      security:
+      - OAuth2PasswordBearer: []
+    put:
+      tags:
+      - Autenticação
+      summary: Atualizar perfil autenticado
+      description: Atualiza username, email e/ou senha na tabela `usuarios`. Requer JWT.
+      operationId: update_me_auth_me_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/tutores:
+    get:
+      tags:
+      - Tutores
+      summary: Listar tutores
+      description: Retorna todos os registros da tabela `tutores`.
+      operationId: read_tutores_api_tutores_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Tutor'
+                type: array
+                title: Response Read Tutores Api Tutores Get
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - Tutores
+      summary: Cadastrar tutor
+      description: Insere registro na tabela `tutores`.
+      operationId: create_tutor_api_tutores_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TutorCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tutor'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/tutores/{tutor_id}:
+    put:
+      tags:
+      - Tutores
+      summary: Atualizar tutor
+      description: Atualiza tutor existente por ID.
+      operationId: update_tutor_api_tutores__tutor_id__put
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: tutor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Tutor Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TutorCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Tutores
+      summary: Excluir tutor
+      description: Remove tutor por ID (pets vinculados são excluídos em cascata).
+      operationId: delete_tutor_api_tutores__tutor_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: tutor_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Tutor Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/pets:
+    get:
+      tags:
+      - Pets
+      summary: Listar pets
+      description: Retorna todos os registros da tabela `pets`.
+      operationId: read_pets_api_pets_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Pet'
+                type: array
+                title: Response Read Pets Api Pets Get
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - Pets
+      summary: Cadastrar pet
+      description: 'Insere registro na tabela `pets`. Espécie: Cachorro ou Gato.'
+      operationId: create_pet_api_pets_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/pets/{pet_id}:
+    put:
+      tags:
+      - Pets
+      summary: Atualizar pet
+      description: Atualiza pet existente por ID.
+      operationId: update_pet_api_pets__pet_id__put
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: pet_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Pet Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Pets
+      summary: Excluir pet
+      description: Remove pet por ID.
+      operationId: delete_pet_api_pets__pet_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: pet_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Pet Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/servicos:
+    get:
+      tags:
+      - Serviços
+      summary: Listar serviços
+      description: Retorna catálogo da tabela `servicos`.
+      operationId: read_servicos_api_servicos_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Servico'
+                type: array
+                title: Response Read Servicos Api Servicos Get
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - Serviços
+      summary: Cadastrar serviço
+      description: Insere novo serviço com nome, descrição e preço.
+      operationId: create_servico_api_servicos_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicoCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Servico'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/servicos/{id}:
+    put:
+      tags:
+      - Serviços
+      summary: Atualizar serviço
+      description: Atualiza serviço existente por ID.
+      operationId: update_servico_api_servicos__id__put
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicoCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Servico'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Serviços
+      summary: Excluir serviço
+      description: Remove serviço por ID.
+      operationId: delete_servico_api_servicos__id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/agendamentos:
+    get:
+      tags:
+      - Agendamentos
+      summary: Listar agendamentos
+      description: Retorna todos os agendamentos com FKs de tutor, pet e serviço.
+      operationId: read_agendamentos_api_agendamentos_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Agendamento'
+                type: array
+                title: Response Read Agendamentos Api Agendamentos Get
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - Agendamentos
+      summary: Criar agendamento
+      description: Insere agendamento cruzando tutor_id, pet_id e servico_id.
+      operationId: create_agendamento_api_agendamentos_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgendamentoCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agendamento'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/agendamentos/{id}:
+    put:
+      tags:
+      - Agendamentos
+      summary: Atualizar agendamento
+      description: Atualiza agendamento existente por ID.
+      operationId: update_agendamento_api_agendamentos__id__put
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgendamentoCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agendamento'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Agendamentos
+      summary: Excluir agendamento
+      description: Remove agendamento por ID.
+      operationId: delete_agendamento_api_agendamentos__id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/avisos:
+    get:
+      tags:
+      - Avisos
+      summary: Listar avisos do mural
+      description: Retorna avisos ordenados por `data_criacao` (mais recentes primeiro).
+      operationId: read_avisos_api_avisos_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Aviso'
+                type: array
+                title: Response Read Avisos Api Avisos Get
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - Avisos
+      summary: Publicar aviso
+      description: 'Insere aviso na tabela `avisos`. Tipo: Urgente, Aviso ou Lembrete.'
+      operationId: create_aviso_api_avisos_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvisoCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aviso'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /api/avisos/{aviso_id}:
+    delete:
+      tags:
+      - Avisos
+      summary: Excluir aviso
+      description: Remove aviso do mural por ID.
+      operationId: delete_aviso_api_avisos__aviso_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: aviso_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Aviso Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    Agendamento:
+      properties:
+        tutor_id:
+          type: integer
+          title: Tutor Id
+          description: FK tutores.id
+          example: 1
+        pet_id:
+          type: integer
+          title: Pet Id
+          description: FK pets.id
+          example: 1
+        servico_id:
+          type: integer
+          title: Servico Id
+          description: FK servicos.id
+          example: 1
+        data_hora:
+          type: string
+          format: date-time
+          title: Data Hora
+          description: Data e hora do agendamento
+          example: '2026-06-15T14:30:00'
+        status:
+          type: string
+          title: Status
+          description: Agendado | Em Andamento | Concluido | Cancelado
+          default: Agendado
+          example: Agendado
+        id:
+          type: integer
+          title: Id
+          description: ID gerado pelo banco (PK)
+          example: 1
+      type: object
+      required:
+      - tutor_id
+      - pet_id
+      - servico_id
+      - data_hora
+      - id
+      title: Agendamento
+    AgendamentoCreate:
+      properties:
+        tutor_id:
+          type: integer
+          title: Tutor Id
+          description: FK tutores.id
+          example: 1
+        pet_id:
+          type: integer
+          title: Pet Id
+          description: FK pets.id
+          example: 1
+        servico_id:
+          type: integer
+          title: Servico Id
+          description: FK servicos.id
+          example: 1
+        data_hora:
+          type: string
+          format: date-time
+          title: Data Hora
+          description: Data e hora do agendamento
+          example: '2026-06-15T14:30:00'
+        status:
+          type: string
+          title: Status
+          description: Agendado | Em Andamento | Concluido | Cancelado
+          default: Agendado
+          example: Agendado
+      type: object
+      required:
+      - tutor_id
+      - pet_id
+      - servico_id
+      - data_hora
+      title: AgendamentoCreate
+    Aviso:
+      properties:
+        tipo:
+          type: string
+          title: Tipo
+          description: Urgente | Aviso | Lembrete
+          example: Urgente
+        mensagem:
+          type: string
+          title: Mensagem
+          description: Texto exibido no mural
+          example: Clínica fechará mais cedo hoje.
+        id:
+          type: integer
+          title: Id
+          description: ID gerado pelo banco (PK)
+          example: 1
+        data_criacao:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Data Criacao
+          description: Timestamp automático do banco
+      type: object
+      required:
+      - tipo
+      - mensagem
+      - id
+      title: Aviso
+    AvisoCreate:
+      properties:
+        tipo:
+          type: string
+          title: Tipo
+          description: Urgente | Aviso | Lembrete
+          example: Urgente
+        mensagem:
+          type: string
+          title: Mensagem
+          description: Texto exibido no mural
+          example: Clínica fechará mais cedo hoje.
+      type: object
+      required:
+      - tipo
+      - mensagem
+      title: AvisoCreate
+    Body_login_auth_login_post:
+      properties:
+        grant_type:
+          anyOf:
+          - type: string
+            pattern: ^password$
+          - type: 'null'
+          title: Grant Type
+        username:
+          type: string
+          title: Username
+        password:
+          type: string
+          format: password
+          title: Password
+        scope:
+          type: string
+          title: Scope
+          default: ''
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          format: password
+          title: Client Secret
+      type: object
+      required:
+      - username
+      - password
+      title: Body_login_auth_login_post
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    MessageResponse:
+      properties:
+        message:
+          type: string
+          title: Message
+          example: Registro deletado com sucesso
+      type: object
+      required:
+      - message
+      title: MessageResponse
+    Pet:
+      properties:
+        nome:
+          type: string
+          maxLength: 50
+          title: Nome
+          description: Nome do pet
+          example: Rex
+        especie:
+          type: string
+          title: Especie
+          description: 'Espécie: Cachorro ou Gato'
+          example: Cachorro
+        raca:
+          anyOf:
+          - type: string
+            maxLength: 50
+          - type: 'null'
+          title: Raca
+          description: Raça do animal
+          example: Golden Retriever
+        sexo:
+          type: string
+          title: Sexo
+          description: 'Sexo: M (macho) ou F (fêmea)'
+          example: M
+        tutor_id:
+          type: integer
+          title: Tutor Id
+          description: ID do tutor dono (FK tutores.id)
+          example: 1
+        id:
+          type: integer
+          title: Id
+          description: ID gerado pelo banco (PK)
+          example: 1
+      type: object
+      required:
+      - nome
+      - especie
+      - sexo
+      - tutor_id
+      - id
+      title: Pet
+    PetCreate:
+      properties:
+        nome:
+          type: string
+          maxLength: 50
+          title: Nome
+          description: Nome do pet
+          example: Rex
+        especie:
+          type: string
+          title: Especie
+          description: 'Espécie: Cachorro ou Gato'
+          example: Cachorro
+        raca:
+          anyOf:
+          - type: string
+            maxLength: 50
+          - type: 'null'
+          title: Raca
+          description: Raça do animal
+          example: Golden Retriever
+        sexo:
+          type: string
+          title: Sexo
+          description: 'Sexo: M (macho) ou F (fêmea)'
+          example: M
+        tutor_id:
+          type: integer
+          title: Tutor Id
+          description: ID do tutor dono (FK tutores.id)
+          example: 1
+      type: object
+      required:
+      - nome
+      - especie
+      - sexo
+      - tutor_id
+      title: PetCreate
+    ProfileResponse:
+      properties:
+        username:
+          type: string
+          title: Username
+          example: ShardCadu
+        email:
+          type: string
+          title: Email
+          example: cadu.sport@miau.com
+      type: object
+      required:
+      - username
+      - email
+      title: ProfileResponse
+    ProfileUpdate:
+      properties:
+        username:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Username
+          example: ShardCadu
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+          example: cadu.sport@miau.com
+        password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Password
+          description: Opcional — deixe vazio para manter
+          example: nova_senha
+      type: object
+      title: ProfileUpdate
+    Servico:
+      properties:
+        nome:
+          type: string
+          maxLength: 100
+          title: Nome
+          description: Nome do serviço
+          example: Banho e Tosa
+        descricao:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Descricao
+          description: Descrição detalhada
+          example: Banho completo com tosa higiênica
+        preco:
+          type: number
+          minimum: 0.0
+          title: Preco
+          description: Preço em reais (DECIMAL no banco)
+          example: 89.9
+        id:
+          type: integer
+          title: Id
+          description: ID gerado pelo banco (PK)
+          example: 1
+      type: object
+      required:
+      - nome
+      - preco
+      - id
+      title: Servico
+    ServicoCreate:
+      properties:
+        nome:
+          type: string
+          maxLength: 100
+          title: Nome
+          description: Nome do serviço
+          example: Banho e Tosa
+        descricao:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Descricao
+          description: Descrição detalhada
+          example: Banho completo com tosa higiênica
+        preco:
+          type: number
+          minimum: 0.0
+          title: Preco
+          description: Preço em reais (DECIMAL no banco)
+          example: 89.9
+      type: object
+      required:
+      - nome
+      - preco
+      title: ServicoCreate
+    Token:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+          description: Token JWT para Authorization Bearer
+        token_type:
+          type: string
+          title: Token Type
+          default: bearer
+          example: bearer
+      type: object
+      required:
+      - access_token
+      title: Token
+    Tutor:
+      properties:
+        nome:
+          type: string
+          maxLength: 100
+          title: Nome
+          description: Nome completo do tutor
+          example: João Silva
+        contato:
+          type: string
+          maxLength: 50
+          title: Contato
+          description: E-mail ou contato principal
+          example: joao@email.com
+        endereco:
+          anyOf:
+          - type: string
+            maxLength: 200
+          - type: 'null'
+          title: Endereco
+          description: Endereço residencial
+          example: Rua das Flores, 123
+        telefone:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Telefone
+          description: Telefone com DDD
+          example: (11) 98888-1111
+        foto:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Foto
+          description: Foto do tutor em base64 (data URL)
+        id:
+          type: integer
+          title: Id
+          description: ID gerado pelo banco (PK)
+          example: 1
+      type: object
+      required:
+      - nome
+      - contato
+      - id
+      title: Tutor
+    TutorCreate:
+      properties:
+        nome:
+          type: string
+          maxLength: 100
+          title: Nome
+          description: Nome completo do tutor
+          example: João Silva
+        contato:
+          type: string
+          maxLength: 50
+          title: Contato
+          description: E-mail ou contato principal
+          example: joao@email.com
+        endereco:
+          anyOf:
+          - type: string
+            maxLength: 200
+          - type: 'null'
+          title: Endereco
+          description: Endereço residencial
+          example: Rua das Flores, 123
+        telefone:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Telefone
+          description: Telefone com DDD
+          example: (11) 98888-1111
+        foto:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Foto
+          description: Foto do tutor em base64 (data URL)
+      type: object
+      required:
+      - nome
+      - contato
+      title: TutorCreate
+    UserCreate:
+      properties:
+        username:
+          type: string
+          maxLength: 50
+          minLength: 3
+          title: Username
+          description: Nome de usuário único
+          example: ShardCadu
+        email:
+          type: string
+          format: email
+          title: Email
+          description: E-mail único do usuário
+          example: cadu.sport@miau.com
+        password:
+          type: string
+          minLength: 6
+          title: Password
+          description: Senha de acesso
+          example: cadu123
+      type: object
+      required:
+      - username
+      - email
+      - password
+      title: UserCreate
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /auth/login
+      description: Autenticação JWT. No Authorize, use username `ShardCadu` e password `cadu123`. Deixe client_id e client_secret
+        vazios. Rotas /api/* exigem token.
+    BearerJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Alternativa manual: faça POST /auth/login, copie access_token e cole aqui (apenas o token, sem a palavra
+        Bearer).'
+tags:
+- name: Autenticação
+  description: 'Login, registro e perfil do usuário. Tabela: `usuarios`.'
+- name: Tutores
+  description: 'CRUD de donos dos pets. Tabela: `tutores`.'
+- name: Pets
+  description: 'CRUD de pacientes (Cachorro/Gato). Tabela: `pets` (FK → tutores).'
+- name: Serviços
+  description: 'Catálogo de serviços e preços. Tabela: `servicos`.'
+- name: Agendamentos
+  description: 'Agendamentos cruzando tutor, pet e serviço. Tabela: `agendamentos`.'
+- name: Avisos
+  description: 'Mural de avisos da Home. Tabela: `avisos`.'
+externalDocs:
+  description: Guia completo da API (Markdown)
+  url: https://github.com/Dev-Carlos-Alves/MiAu-/blob/main/docs/API-Swagger.md

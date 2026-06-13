@@ -14,7 +14,12 @@ import schemas
 
 router = APIRouter(prefix="/auth", tags=["Autenticação"])
 
-@router.post("/register", response_model=schemas.Token)
+@router.post(
+    "/register",
+    response_model=schemas.Token,
+    summary="Registrar novo usuário",
+    description="Cria registro na tabela `usuarios` e retorna token JWT.",
+)
 def register(user: schemas.UserCreate, db: pymysql.connections.Connection = Depends(get_db)):
     cursor = db.cursor()
     cursor.execute("SELECT * FROM usuarios WHERE username = %s OR email = %s", (user.username, user.email))
@@ -34,7 +39,12 @@ def register(user: schemas.UserCreate, db: pymysql.connections.Connection = Depe
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.post("/login", response_model=schemas.Token)
+@router.post(
+    "/login",
+    response_model=schemas.Token,
+    summary="Login (obter token JWT)",
+    description="Autentica com username/password (form-urlencoded). Use o token em `Authorization: Bearer`.",
+)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: pymysql.connections.Connection = Depends(get_db)):
     cursor = db.cursor()
     cursor.execute("SELECT * FROM usuarios WHERE username = %s", (form_data.username,))
@@ -51,22 +61,36 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: pymysql.connecti
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/me", tags=["Autenticação"])
+@router.get(
+    "/me",
+    response_model=schemas.ProfileResponse,
+    summary="Obter perfil autenticado",
+    description="Retorna username e email do usuário logado. Requer JWT.",
+)
 def get_me(user = Depends(get_current_user)):
     return {"username": user['username'], "email": user['email']}
 
-@router.put("/me", tags=["Autenticação"])
-def update_me(data: dict, db: pymysql.connections.Connection = Depends(get_db), user = Depends(get_current_user)):
+@router.put(
+    "/me",
+    response_model=schemas.MessageResponse,
+    summary="Atualizar perfil autenticado",
+    description="Atualiza username, email e/ou senha na tabela `usuarios`. Requer JWT.",
+)
+def update_me(
+    data: schemas.ProfileUpdate,
+    db: pymysql.connections.Connection = Depends(get_db),
+    user = Depends(get_current_user),
+):
     cursor = db.cursor()
-    new_username = data.get("username", user['username'])
-    new_email = data.get("email", user['email'])
+    new_username = data.username or user['username']
+    new_email = data.email or user['email']
     
     query = "UPDATE usuarios SET username=%s, email=%s"
     params = [new_username, new_email]
     
-    if "password" in data and data["password"]:
+    if data.password:
         query += ", senha_hash=%s"
-        params.append(get_password_hash(data["password"]))
+        params.append(get_password_hash(data.password))
         
     query += " WHERE id=%s"
     params.append(user['id'])

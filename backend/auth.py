@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'aumiau_super_secret_key_change_in_prod
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('JWT_EXPIRE_MINUTES', '120'))
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 def verify_password(plain_password, db_password):
     return plain_password == db_password

@@ -84,5 +84,11 @@ python app.py
 Abra o seu navegador web (Google Chrome, Firefox, etc.) e acesse:
 👉 **http://127.0.0.1:8000**
 
+### 5. Documentação da API (Swagger)
+- **Swagger UI interativo:** http://127.0.0.1:8000/docs
+- **ReDoc:** http://127.0.0.1:8000/redoc
+- **Documentação completa (Markdown):** [`docs/API-Swagger.md`](docs/API-Swagger.md)
+- **OpenAPI JSON (importável no Swagger Editor):** [`docs/openapi.json`](docs/openapi.json)
+
 ---
 👨‍💻 *Desenvolvido e arquitetado por Carlos Eduardo (Cadu) - 2026.*

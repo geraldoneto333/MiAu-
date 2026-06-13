@@ -15,6 +15,7 @@ CREATE TABLE tutores (
     contato VARCHAR(50) NOT NULL,
     telefone VARCHAR(20),
     endereco VARCHAR(200),
+    foto MEDIUMTEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
