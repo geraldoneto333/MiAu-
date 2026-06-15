@@ -102,7 +102,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const user = document.getElementById('username').value;
     const pass = document.getElementById('password').value;
     const errEl = document.getElementById('login-error');
-
+    
     try {
         const data = await API.login(user, pass);
         localStorage.setItem('aumiau_token', data.access_token);

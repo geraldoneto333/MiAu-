@@ -1,0 +1,25 @@
+/* Overrides for Next.js */
+.hidden {
+  display: none !important;
+}
+
+.view {
+  min-height: 100vh;
+}
+
+.content-section {
+  display: block;
+}
+
+/* Swagger UI inside dashboard */
+.swagger-docs-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  min-height: calc(100vh - 120px);
+}
+
+.swagger-docs-wrapper .swagger-ui {
+  font-family: Inter, sans-serif;
+}

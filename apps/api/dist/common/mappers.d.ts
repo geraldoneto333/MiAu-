@@ -1,0 +1,12 @@
+import { Tutor } from '../entities/tutor.entity';
+import { Pet } from '../entities/pet.entity';
+import { Servico } from '../entities/servico.entity';
+import { Agendamento } from '../entities/agendamento.entity';
+import { Aviso } from '../entities/aviso.entity';
+import { TutorDto, PetDto, ServicoDto, AgendamentoDto, AvisoDto } from './dto';
+export declare function toTutorDto(t: Tutor): TutorDto;
+export declare function toPetDto(p: Pet): PetDto;
+export declare function toServicoDto(s: Servico): ServicoDto;
+export declare function toAgendamentoDto(a: Agendamento): AgendamentoDto;
+export declare function toAvisoDto(a: Aviso): AvisoDto;
+export declare function parseDataHora(value: string): Date;
