@@ -394,6 +394,23 @@
         </div>
     </div>
 
+    <!-- Modal Confirm -->
+    <div id="modal-confirm" class="modal hidden">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div class="modal-header">
+                <h3 id="modal-confirm-title">Confirmação</h3>
+                <button type="button" class="btn-close" onclick="closeModal('modal-confirm')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <p id="modal-confirm-message" style="margin-bottom: 20px; font-size: 1.1rem;">Deseja realmente excluir este item?</p>
+            </div>
+            <div class="modal-actions" style="justify-content: center;">
+                <button type="button" class="btn-cancel" onclick="closeModal('modal-confirm')">Cancelar</button>
+                <button type="button" class="btn-delete" id="btn-confirm-action">Excluir</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/api.js?v=11"></script>
     <script src="js/app.js?v=11"></script>
 </body>

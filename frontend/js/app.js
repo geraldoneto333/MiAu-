@@ -270,6 +270,25 @@ function closeModal(id) {
     }
 }
 
+let currentConfirmAction = null;
+
+function showConfirmModal(title, message, action) {
+    const titleEl = document.getElementById('modal-confirm-title');
+    const msgEl = document.getElementById('modal-confirm-message');
+    if (titleEl) titleEl.textContent = title;
+    if (msgEl) msgEl.textContent = message;
+    currentConfirmAction = action;
+    openModal('modal-confirm');
+}
+
+document.getElementById('btn-confirm-action')?.addEventListener('click', async () => {
+    if (currentConfirmAction) {
+        await currentConfirmAction();
+        currentConfirmAction = null;
+    }
+    closeModal('modal-confirm');
+});
+
 function populateSelect(selectId, items, labelFn, valueKey, placeholder = true) {
     const select = document.getElementById(selectId);
     if (!select) return;
@@ -624,25 +643,54 @@ async function openCreatePetForTutor(tutorId) {
     }
 }
 
-async function deletePetFromAccordion(petId) {
-    if (!confirm('Excluir este pet?')) return;
-    try {
-        await API.deletePet(petId);
-        await loadData('tutores-pets');
-    } catch (err) {
-        alert(err.message);
-    }
+function deletePetFromAccordion(petId) {
+    showConfirmModal('Excluir Pet', 'Deseja realmente excluir este pet?', async () => {
+        try {
+            await API.deletePet(petId);
+            await loadData('tutores-pets');
+        } catch (err) {
+            alert(err.message);
+        }
+    });
 }
 
-async function deleteTutorFromAccordion(tutorId) {
-    if (!confirm('Excluir este tutor e todos os pets vinculados?')) return;
-    try {
-        await API.deleteTutor(tutorId);
-        expandedTutorIds.delete(Number(tutorId));
-        await loadData('tutores-pets');
-    } catch (err) {
-        alert(err.message);
-    }
+function deleteTutorFromAccordion(tutorId) {
+    showConfirmModal('Excluir Tutor', 'Excluir este tutor e todos os pets vinculados?', async () => {
+        try {
+            await API.deleteTutor(tutorId);
+            expandedTutorIds.delete(Number(tutorId));
+            await loadData('tutores-pets');
+        } catch (err) {
+            alert(err.message);
+        }
+    });
+}
+
+function confirmDeleteServico(id) {
+    showConfirmModal('Excluir Serviço', 'Deseja realmente excluir este serviço?', async () => {
+        try {
+            await API.deleteServico(id);
+            await loadData('servicos');
+        } catch (err) { alert(err.message); }
+    });
+}
+
+function confirmDeleteProduto(id) {
+    showConfirmModal('Excluir Produto', 'Deseja realmente excluir este produto?', async () => {
+        try {
+            await API.deleteProduto(id);
+            await loadData('produtos');
+        } catch (err) { alert(err.message); }
+    });
+}
+
+function confirmDeleteAgendamento(id) {
+    showConfirmModal('Excluir Agendamento', 'Deseja realmente excluir este agendamento?', async () => {
+        try {
+            await API.deleteAgendamento(id);
+            await loadData('agendamentos');
+        } catch (err) { alert(err.message); }
+    });
 }
 
 function renderAgendamentosTable() {
@@ -653,7 +701,7 @@ function renderAgendamentosTable() {
         const tutor = lookupNome(tutoresCache, a.tutor_id, 'nome');
         const pet = lookupNome(petsCache, a.pet_id, 'nome');
         const servico = lookupNome(servicosCache, a.servico_id, 'nome');
-        tbody.innerHTML += `<tr><td>${a.id}</td><td>${tutor}</td><td>${pet}</td><td>${servico}</td><td>${new Date(a.data_hora).toLocaleString('pt-BR')}</td><td>${a.status}</td>${renderActionsCell(`openEditAgendamento(${a.id})`, `API.deleteAgendamento(${a.id}).then(()=>loadData('agendamentos'))`)}</tr>`;
+        tbody.innerHTML += `<tr><td>${a.id}</td><td>${tutor}</td><td>${pet}</td><td>${servico}</td><td>${new Date(a.data_hora).toLocaleString('pt-BR')}</td><td>${a.status}</td>${renderActionsCell(`openEditAgendamento(${a.id})`, `confirmDeleteAgendamento(${a.id})`)}</tr>`;
     });
     renderAgendaCalendario();
 }
@@ -677,6 +725,9 @@ window.toggleTutorExpand = toggleTutorExpand;
 window.openCreatePetForTutor = openCreatePetForTutor;
 window.deletePetFromAccordion = deletePetFromAccordion;
 window.deleteTutorFromAccordion = deleteTutorFromAccordion;
+window.confirmDeleteServico = confirmDeleteServico;
+window.confirmDeleteProduto = confirmDeleteProduto;
+window.confirmDeleteAgendamento = confirmDeleteAgendamento;
 window.openModal = openModal;
 window.closeModal = closeModal;
 
@@ -697,7 +748,7 @@ async function loadData(module) {
             const tbody = document.getElementById('tbody-servicos');
             tbody.innerHTML = '';
             data.forEach(s => {
-                tbody.innerHTML += `<tr><td>${s.id}</td><td>${s.nome}</td><td>R$ ${s.preco}</td>${renderActionsCell(`openEditServico(${s.id})`, `API.deleteServico(${s.id}).then(()=>loadData('servicos'))`)}</tr>`;
+                tbody.innerHTML += `<tr><td>${s.id}</td><td>${s.nome}</td><td>R$ ${s.preco}</td>${renderActionsCell(`openEditServico(${s.id})`, `confirmDeleteServico(${s.id})`)}</tr>`;
             });
         } catch (e) { console.error(e); }
     } else if (module === 'produtos') {
@@ -707,7 +758,7 @@ async function loadData(module) {
             const tbody = document.getElementById('tbody-produtos');
             tbody.innerHTML = '';
             data.forEach(p => {
-                tbody.innerHTML += `<tr><td>${p.id}</td><td>${escapeHtml(p.nome)}</td><td>${escapeHtml(p.descricao || '—')}</td><td>R$ ${p.preco}</td><td>${p.estoque}</td>${renderActionsCell(`openEditProduto(${p.id})`, `API.deleteProduto(${p.id}).then(()=>loadData('produtos'))`)}</tr>`;
+                tbody.innerHTML += `<tr><td>${p.id}</td><td>${escapeHtml(p.nome)}</td><td>${escapeHtml(p.descricao || '—')}</td><td>R$ ${p.preco}</td><td>${p.estoque}</td>${renderActionsCell(`openEditProduto(${p.id})`, `confirmDeleteProduto(${p.id})`)}</tr>`;
             });
         } catch (e) { console.error(e); }
     } else if (module === 'agendamentos') {
