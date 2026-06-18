@@ -1,4 +1,4 @@
-![License](https://img.shields.io/badge/license-MIT-blue) ![Status](https://img.shields.io/badge/status-stable-brightgreen) ![Language](https://img.shields.io/badge/lang-PT-BR-brightgreen)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) ![Status](https://img.shields.io/badge/status-stable-brightgreen) ![Language](https://img.shields.io/badge/lang-PT-BR-brightgreen)
 
 # 🐾 MiAu - Pet Shop & Bem-Estar
 
