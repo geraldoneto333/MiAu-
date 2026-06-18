@@ -1,3 +1,4 @@
+![License](https://img.shields.io/badge/license-MIT-blue) ![Status](https://img.shields.io/badge/status-stable-brightgreen) ![Language](https://img.shields.io/badge/lang-PT-BR-brightgreen)
 # 🐾 MiAu - Pet Shop & Bem-Estar
 
 ## 📌 Sobre o Projeto
@@ -116,4 +117,11 @@ A UI é renderizada pelo Next.js em `/docs` com `swagger-ui-react`, consumindo `
 3. Ou cole o token manualmente em **Authorize → BearerJWT**.
 
 ---
-👨‍💻 *Desenvolvido e arquitetado por Carlos Eduardo (Cadu) - 2026.*
+## 👨‍💻 Contribuidores do MiAu
+Desenvolvido, arquitetado e testado por: 
+- **Bruno Souza**
+- **Carlos Eduardo Alves**
+- **Geraldo de Albuquerque**
+- **João Paulo Paz**
+
+**Recife - 2026**
