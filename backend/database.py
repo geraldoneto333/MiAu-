@@ -1,4 +1,5 @@
-# Configuração e conexão com o banco de dados MariaDB/MySQL - [Carlos Eduardo]
+# Configuração e conexão com o banco de dados MariaDB/MySQL - [João Paulo Paz]
+# Inicializa conexão e gerencia pool de conexões usando variáveis de ambiente. Licença MIT [João Paulo Paz]
 import os
 import pymysql
 
