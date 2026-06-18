@@ -12,20 +12,20 @@ O **MiAu** é um Sistema de Gestão Fullstack moderno, desenvolvido para clínic
 
 ## 🛠️ Tecnologias Utilizadas
 
-### Frontend (`apps/web`)
-- **Next.js 15** + **React 19** — App Router, rotas protegidas por JWT.
-- **swagger-ui-react** — Swagger UI embarcado em `/docs` dentro do dashboard.
-- **Arco Design System** — CSS customizado, FontAwesome, UI Avatars.
+### Frontend (`frontend/`)
+- **HTML5, CSS3 e JavaScript Vanilla** — Single Page Application (SPA) levíssima e rápida.
+- **Arco Design System** — Referência de design para botões, inputs, modais e responsividade.
+- **FontAwesome** — Ícones modernos e vetoriais para a interface.
+- **UI Avatars** — Geração de avatares automáticos baseados no nome do usuário e tutores.
 
-### Backend (`apps/api`)
-- **NestJS 11** + **TypeORM** — API REST com validação (`class-validator`).
-- **@nestjs/swagger** — Geração automática do OpenAPI via decorators.
-- **`initSwagger(app)`** — Inicialização centralizada em `apps/api/src/swagger.ts`, chamada em `apps/api/src/main.ts`.
-- **MariaDB / MySQL** — Banco relacional `miau_db`.
-
-### Legado (preservado, não usado por padrão)
-- `backend/` — FastAPI + Pydantic (stack anterior).
-- `frontend/` — SPA vanilla HTML/CSS/JS (stack anterior).
+### Backend (`backend/`)
+- **FastAPI** — Framework web moderno e de altíssimo desempenho para Python.
+- **Pydantic** — Validação rigorosa de dados.
+- **Uvicorn** — Servidor ASGI ultrarrápido para rodar a aplicação unificada.
+- **PyMySQL** — Driver oficial para conexão direta com o banco de dados.
+- **python-jose & passlib** — Autenticação segura via JWT (JSON Web Tokens) e hash de senhas (bcrypt).
+- **python-dotenv** — Configuração do projeto orientada a variáveis de ambiente (`.env`).
+- **MariaDB / MySQL** — Banco de dados relacional para persistência (esquema `miau_db`).
 
 ## 📦 Estrutura de Módulos (Features)
 - 👤 **Autenticação e Perfil**: Login JWT, gestão de perfil e avatar.
@@ -35,88 +35,72 @@ O **MiAu** é um Sistema de Gestão Fullstack moderno, desenvolvido para clínic
 - 🛍️ **Produtos**: Catálogo e controle de estoque de produtos (ração, brinquedos, medicamentos) com CRUD completo.
 - 🏷️ **Serviços**: Catálogo comercial de banho, tosa, etc.
 - 📅 **Agendamentos**: Cruzamento de tutores, pets e serviços.
-- 📖 **API Docs**: Swagger UI integrado em `/docs` (sidebar "API Docs").
+- 📖 **API Docs**: Swagger UI gerado e integrado nativamente pelo FastAPI em `/docs`.
 
 ## 🚀 Como Executar o Projeto Localmente
 
 ### Estrutura do Projeto
 
-```
+```text
 MiAu/
-├── package.json          # Monorepo npm (workspaces: apps/api, apps/web)
-├── app.py                # Atalho → npm run dev
-├── apps/
-│   ├── api/              # NestJS — API REST + initSwagger(app)
-│   └── web/              # Next.js — UI + Swagger em /docs
-├── backend/              # FastAPI legado
-├── database/             # Schema SQL e scripts de setup
-├── deploy/               # Configuração de deploy (Vercel)
-│   ├── vercel.json       # Espelho de apps/web/vercel.json
-│   └── .env.example
-├── docs/                 # openapi.json, openapi.yaml, guias
-└── scripts/              # export-openapi.mjs
+├── app.py                # Ponto de entrada unificado (inicia Uvicorn + Frontend estático)
+├── backend/              # Lógica de negócio, Rotas da API, Schemas e Auth
+├── frontend/             # Arquivos estáticos (HTML, CSS, JS, Imagens)
+├── database/             # Schema SQL e script de reset do banco (setup_db.py)
+├── docs/                 # Documentação complementar
+└── venv/                 # Ambiente virtual Python
 ```
-
-> **Deploy Vercel:** configure **Root Directory** = `apps/web`. O `deploy/vercel.json` espelha a config de produção (Next.js + handler NestJS em `api/nest.ts`).
 
 ### 1. Pré-requisitos
-- **Node.js 20+** e **npm**.
+- **Python 3.8+**
 - Servidor **MariaDB/MySQL** local (porta 3306).
-- **Python 3** (opcional — só para `database/setup_db.py` e atalho `app.py`).
 
-### 2. Configurar o Banco de Dados
+### 2. Configurar o Banco de Dados e Variáveis de Ambiente
+Certifique-se de que o banco de dados está rodando. Opcionalmente, crie um arquivo `.env` na raiz do projeto com as seguintes chaves:
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=miau_db
+DB_PORT=3306
+```
+
+Para inicializar as tabelas e o usuário administrador padrão, rode:
 ```bash
 python database/setup_db.py
 ```
 > **Credenciais Padrão:** Login: `ShardCadu` | Senha: `cadu123`
 
-### 3. Variáveis de Ambiente
-Copie `deploy/.env.example` para `.env` na raiz:
+### 3. Instalar Dependências
+Recomenda-se o uso de um ambiente virtual:
 ```bash
-cp deploy/.env.example .env
+# Windows
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r backend/requirements.txt
 ```
 
-### 4. Instalar e Rodar
-```bash
-npm install
-npm run dev
-```
-Ou use o atalho Python:
+### 4. Executar a Aplicação
+Inicie a aplicação utilizando o script principal que unifica o Backend (FastAPI) e o Frontend estático:
 ```bash
 python app.py
 ```
 
-Isso inicia:
-- **NestJS** em `http://127.0.0.1:3001` (API + `/openapi.json` + `/api-docs`)
-- **Next.js** em `http://127.0.0.1:3000` (app completa)
-
 ### 5. Acessar o Sistema
 | Recurso | URL |
 |---------|-----|
-| App | http://127.0.0.1:3000 |
-| Swagger integrado | http://127.0.0.1:3000/docs |
-| OpenAPI JSON | http://127.0.0.1:3000/openapi.json |
-| Swagger debug (NestJS) | http://127.0.0.1:3001/api-docs |
+| App Completa | http://127.0.0.1:8000 |
+| Documentação da API (Swagger) | http://127.0.0.1:8000/docs |
+| OpenAPI JSON | http://127.0.0.1:8000/openapi.json |
 
 ### 6. Documentação da API (Swagger)
 
-O OpenAPI é gerado pelo NestJS via `initSwagger(app)`:
-
-```typescript
-// apps/api/src/main.ts
-initSwagger(app);
-```
-
-A UI é renderizada pelo Next.js em `/docs` com `swagger-ui-react`, consumindo `/openapi.json` (proxy para a API NestJS).
-
-- **Documentação Markdown:** [`docs/API-Swagger.md`](docs/API-Swagger.md)
-- **Exportar spec estático:** `npm run export:openapi` (requer API rodando na porta 3001)
-- **Importar no Swagger Hub:** [`docs/openapi.yaml`](docs/openapi.yaml)
+A documentação interativa Swagger é gerada automaticamente pelo FastAPI com base nas rotas e esquemas Pydantic configurados na pasta `backend/`.
 
 **Autenticação no Swagger:**
-1. Faça login no app (`ShardCadu` / `cadu123`) — o token é injetado automaticamente nas requisições.
-2. Ou use **Authorize → OAuth2PasswordBearer** com as mesmas credenciais.
-3. Ou cole o token manualmente em **Authorize → BearerJWT**.
+1. Clique no botão **Authorize**.
+2. Faça login com as credenciais padrão (`ShardCadu` / `cadu123`).
+3. O token JWT será injetado automaticamente em todas as requisições subsequentes testadas pela interface.
 
 ---
 ## 👨‍💻 Contribuidores do MiAu

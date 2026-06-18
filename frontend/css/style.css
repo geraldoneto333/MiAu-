@@ -195,13 +195,17 @@ button.btn-primary:active {
     margin-top: 0;
     object-fit: contain;
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
-    transition: width 0.3s ease, filter 0.3s ease;
+    transition: width 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+    transform: scale(1.5);
+    transform-origin: center;
 }
 
 .sidebar.collapsed .sidebar-logo img {
     width: 56px;
     max-width: 100%;
     max-height: none;
+    transform: scale(1.5);
+    transform-origin: center;
 }
 
 .sidebar nav ul {
