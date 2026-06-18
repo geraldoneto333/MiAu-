@@ -1,4 +1,5 @@
 # Servidor FastAPI unificado: serve API REST e os arquivos estáticos do frontend - [Carlos Eduardo]
+# Licença MIT aplicada ao projeto (arquivo LICENSE presente). - [João Paulo]
 import sys
 import os
 
